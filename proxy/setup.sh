@@ -1,0 +1,1 @@
+docker run --name my-custom-asi-nginx-container --network host -v $PWD/nginx.conf:/etc/nginx/nginx.conf:ro -d nginx
