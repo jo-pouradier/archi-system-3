@@ -1,9 +1,11 @@
-web:
-  image: nginx
-  volumes:
-   - ./nginx.conf:/etc/nginx/nginx.conf
-  ports:
-   - "8080:80"
-  environment:
-   - NGINX_HOST=foobar.com
-   - NGINX_PORT=80
+---
+version: '3'
+services:
+  proxy:
+    container_name: nginx
+    image: nginx:latest
+    volumes:
+    - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    # ports:
+    # - "80:80"
+    network_mode: host
