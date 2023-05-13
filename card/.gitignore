@@ -1,9 +1,0 @@
-.settings/*
-bin/*
-.DS_Store
-.classpath
-.project
-.idea/*
-target/*
-SPWebApp.iml
-workspace.xml

@@ -8,6 +8,10 @@ target/*
 SPWebApp.iml
 workspace.xml
 
+**/target/
+**/bin/
+**/.idea/
+
 /shelf/
 /workspace.xml
 
