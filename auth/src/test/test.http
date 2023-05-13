@@ -1,0 +1,33 @@
+### Get status###
+GET http://localhost:8083/auth/
+Accept: application/json
+
+
+### Test to register ###
+POST http://localhost:8083/auth/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}",
+  "email": "{{email}}"
+}
+
+> {%
+ client.assert(response.status === 200, 'response status is not 200');
+ client.log('response body is ' + response.body);
+ client.global.set("user_id", response.body.uuid);
+ %}
+
+
+### Test to login ###
+POST http://localhost:8083/auth/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
