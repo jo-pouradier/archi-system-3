@@ -1,0 +1,92 @@
+###
+GET http://localhost:8080/index
+
+> {% // on vérifie que la request s'est bien passé
+  client.test("Request is 200", function() {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+###
+POST http://localhost:8080/card/addCard
+Content-Type: application/json
+
+{
+  "name": "first-card",
+  "description": "a test card",
+  "imageUrl": "",
+  "family": "fire",
+  "affinity": "water",
+  "hp": 100,
+  "attack": 45,
+  "defense": 30,
+  "energy": 25
+}
+
+> {%
+    client.test("Request is 200", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+GET http://127.0.0.1:8080/card/
+Accept: text/html
+
+> {%
+  client.test("Request is 200", function() {
+    client.assert(response.status === 200, "Response status is not 200");
+  });
+%}
+
+###
+
+GET http://127.0.0.1:8080/addUser
+
+> {%
+    client.test("Request is 200", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+//@name Test to get the login page
+GET http://127.0.0.1:8080/login
+Accept: text/html
+
+> {%
+    client.test("Request is 200", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+    client.test("HTML is ok", function(){
+        client.assert(response.body != "index"); // /!\ on ne verifie la difference avec le STRING "index" pas le fichier html
+    })
+%}
+
+###
+//@name Test to get the login form
+
+POST http://127.0.0.1:8080/login-form
+Content-Type: application/json
+
+{
+    "email": "test",
+    "password": "test"
+}
+
+> {%
+    client.test("Request is 200", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+//@name Test to get the register form
+POST http://localhost:8080/register-form
+Content-Type: application/json
+
+{
+    "username": "test",
+    "password": "test",
+      "email": "test"
+}
