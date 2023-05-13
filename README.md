@@ -43,3 +43,7 @@ Pour partager les objets DTO entre les services, nous avons créé une librairie
 ## Problèmes rencontrés
 
 -> lorsque l'un utilisateur s'enregistre, il recoit 5 cartes. Comment sont elles générées ? la premiere fois qu'il s'enregistre AuthService appelle UserService pour creer l'utilisateur et lui donne aussi de l'argent d'ici on appelle CardService pour creer les cartes et les associer a l'utilisateur. Comment "proteger" la fonction generatrices des cartes ?
+
+## TODO
+
+[ ] - Finir cardService et toutes les focntionnalités dont on aura besoin
