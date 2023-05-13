@@ -14,7 +14,7 @@ Content-Type: application/json
 
 {
   "name": "first-card",
-  "description": "a test card",
+  "description": "a test card2",
   "imageUrl": "",
   "family": "fire",
   "affinity": "water",
@@ -39,13 +39,48 @@ Accept: application/json;
         client.assert(response.status === 200, "Response status is not 200");
     });
 
-    client.global.set("cards", response.body);
-    let cards = client.global.get("cards");
-    client.global.set("card", cards[0]);
-    let card = client.global.get("card");
-    client.global.set("card_uuid", card.uuid);
+    client.global.set("card_uuid", response.body[0].uuid);
 %}
 
 ### Get Card by UUID ###
 GET http://localhost:8081/card/{{card_uuid}}
 Accept: application/json
+
+> {%
+    client.test("Request is 200", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### Delete Card by UUID ###
+< {%
+let card_uuid = client.global.get("card_uuid");
+client.log(card_uuid);
+%}
+
+DELETE http://localhost:8081/card/deleteCard
+Content-Type: application/json
+
+{
+  "uuid": "{{card_uuid}}"
+}
+
+> {%
+    client.test("Request is 200", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+    // different to NOT_FOUND
+    client.test("Card is deleted", function() {
+        client.assert(response.body !== "NOT_FOUND", "Card is not deleted");
+    });
+%}
+
+### Verify Card is Deleted ###
+GET http://localhost:8081/card/{{card_uuid}}
+Accept: application/json
+
+> {%
+    client.test("Request is 404", function() {
+        client.assert(response.status === 404, "Response status is not 404, the card should have been deleted by the previous test/request");
+    });
+%}
