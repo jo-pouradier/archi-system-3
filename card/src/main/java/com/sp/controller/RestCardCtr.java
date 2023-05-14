@@ -78,4 +78,11 @@ public class RestCardCtr {
         BeanUtils.copyProperties(cardDeleted, cardDTO);
         return new ResponseEntity<>(cardDTO, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/newUserSet")
+    public ResponseEntity<?> newUserSet(){
+        // FIXME est ce qu'on a besoin de tout User? On peut juste utiliser le cookie (qui est le user uuid), verifier avec authService si c'est un uuid d'un user.
+//        cardService.newUserSet();
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 }

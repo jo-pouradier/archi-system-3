@@ -26,4 +26,5 @@ public class AuthService {
     public User register(String username, String password, String email) {
         return userService.addUser(new User(username, password, email));
     }
+
 }

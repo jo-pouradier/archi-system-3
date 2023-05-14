@@ -37,10 +37,11 @@ public class CardService {
         return card.getOwnerUUID().equals(user.getUUID());
     }
 
-    public void newUserSet(User user){
+    public List<Card> newUserSet(User user){
         //Give him 5 random Cards
         List<Card> cards = CardFactory.generateRandomListFromTemplates(5);
         this.setCards(user, cards);
+        return cards;
     }
 
     private void setCards(User user, List<Card> cards) {

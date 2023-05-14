@@ -5,6 +5,7 @@ import com.sp.model.UserDTO;
 import com.sp.model.UserRegisterDTO;
 import com.sp.model.loginFormDTO;
 import com.sp.service.AuthService;
+import com.sp.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ public class RestAuthCtr {
 
     @Autowired
     private AuthService authService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping(value = "/")
     public HttpStatus getStatus() {
@@ -40,6 +43,16 @@ public class RestAuthCtr {
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
         return userDTO;
+    }
+
+    @GetMapping(value = "/isUser/{uuid}")
+    public ResponseEntity<?> isUser(@PathVariable("uuid") String uuid) {
+        if (uuid == null) return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        User user = userService.getUser(uuid);
+        if (user == null) return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(user, userDTO);
+        return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
 }
 
