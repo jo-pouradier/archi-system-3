@@ -2,7 +2,6 @@ package com.sp.controller;
 
 import com.sp.model.Card;
 import com.sp.model.CardDTO;
-import com.sp.model.uuidDTO;
 import com.sp.service.CardService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,30 +38,37 @@ public class RestCardCtr {
         return new ResponseEntity<>(cardDTO, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/getCardsByOwnerUUID/{uuid}", produces = "application/json")
-    public ResponseEntity<List<CardDTO>> getCardsByOwnerUUID(@PathVariable("uuid") String uuid) {
-        List<Card> cards = cardService.getCardsByOwnerUUID(UUID.fromString(uuid));
+    @GetMapping(value = "/getCardsByOwner", produces = "application/json")
+    public ResponseEntity<?> getCardsByOwnerUUID(@CookieValue String cookieUserUuid) {
+        if (cookieUserUuid == null) return new ResponseEntity<>("You must be authenticated", HttpStatus.UNAUTHORIZED);
+        List<Card> cards = cardService.getCardsByOwnerUUID(UUID.fromString(cookieUserUuid));
         if (cards == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         List<CardDTO> cardDTOS = cardService.convertToDTO(cards);
         return new ResponseEntity<>(cardDTOS, HttpStatus.OK);
     }
 
     @PostMapping (value = "/addCard", produces = "application/json")
-    public ResponseEntity<CardDTO> addCard(@RequestBody CardDTO cardDTO){
-        if (cardDTO == null) return null;
+    public ResponseEntity<?> addCard(@RequestBody CardDTO cardDTO, @CookieValue("user") String cookieUserUuid){
+        if (cardDTO == null) return new ResponseEntity<>("Your body is null", HttpStatus.BAD_REQUEST);
+        if (cookieUserUuid == null) return new ResponseEntity<>("You need to be authenticated", HttpStatus.UNAUTHORIZED);
         Card card = new Card();
         BeanUtils.copyProperties(cardDTO, card);
+        card.setOwnerUUID(UUID.fromString(cookieUserUuid));
         cardService.saveCard(card);
-        cardDTO.setUuid(String.valueOf(card.getUuid()));
+        cardDTO.setUuid(card.getUuid());
+        cardDTO.setOwnerUUID(card.getOwnerUUID());
         return new ResponseEntity<>(cardDTO, HttpStatus.OK);
     }
 
-    // j'ai seulement mis par uuid parce que la fonction de delete par Card sert un peu à rien dcp
-    @DeleteMapping(value = "/deleteCard", produces = "application/json")
-    public ResponseEntity<CardDTO> deleteCard(@RequestBody uuidDTO uuidDTO){
-        if (uuidDTO == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        UUID uuid = uuidDTO.getUuid();
+    @DeleteMapping(value = "/{uuid}", produces = "application/json")
+    public ResponseEntity<?> deleteCard(@PathVariable("uuid") String uuidString, @CookieValue("user") String cookieUserUuid){
+        if (cookieUserUuid == null) return new ResponseEntity<>("You must be authenticated", HttpStatus.UNAUTHORIZED);
+        UUID uuid = UUID.fromString(uuidString);
         if (!cardService.exists(uuid)) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        Card card = cardService.getCard(uuid);
+        if (card.getOwnerUUID() != UUID.fromString(cookieUserUuid)) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
         Card cardDeleted = cardService.deleteCard(uuid);
         CardDTO cardDTO = new CardDTO();
         BeanUtils.copyProperties(cardDeleted, cardDTO);

@@ -2,13 +2,15 @@ package com.sp.model;
 
 import lombok.*;
 
+import java.util.UUID;
+
 @Builder
 @AllArgsConstructor
 @Data
 public class CardDTO{
 
-    private String uuid;
-    private String ownerUUID;
+    private UUID uuid;
+    private UUID ownerUUID;
     private String name;
     private String description;
     private String imageUrl;
@@ -23,6 +25,7 @@ public class CardDTO{
 
     }
 
+    // FIXME j'ai l'impression que ce constructeur est inutile
     public CardDTO(String name, String description, String imageUrl, String family, String affinity, int hp, int attack, int defense, int energy) {
         this.name = name;
         this.description = description;
@@ -38,7 +41,8 @@ public class CardDTO{
     @Override
     public String toString() {
         return "CardDTO{" +
-                "uuid=" + uuid +
+                "uuid=" + uuid + '\'' +
+                ", ownerUUID=" + ownerUUID + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +

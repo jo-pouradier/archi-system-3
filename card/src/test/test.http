@@ -8,13 +8,32 @@ Accept: application/json
     });
 %}
 
-### Add a New Card ###
-POST http://localhost:8081/card/addCard
+### Test to register ###
+POST http://localhost:8083/auth/register
+Accept: application/json
 Content-Type: application/json
 
 {
+  "username": "{{username}}",
+  "password": "{{password}}",
+  "email": "{{email}}"
+}
+
+> {%
+    client.assert(response.status === 200, 'response status is not 200');
+    client.log('response body is ' + response.body);
+    client.global.set("user_uuid", response.body.uuid);
+    client.global.set("cookie", response.body);
+%}
+
+### Add a New Card ###
+POST http://localhost:8081/card/addCard
+Content-Type: application/json
+Cookie: user={{user_uuid}}
+
+{
   "name": "first-card",
-  "description": "a test card2",
+  "description": "a test card",
   "imageUrl": "",
   "family": "fire",
   "affinity": "water",
@@ -23,6 +42,7 @@ Content-Type: application/json
   "defense": 30,
   "energy": 25
 }
+
 
 > {%
     client.test("Request is 200", function() {
@@ -58,12 +78,9 @@ let card_uuid = client.global.get("card_uuid");
 client.log(card_uuid);
 %}
 
-DELETE http://localhost:8081/card/deleteCard
-Content-Type: application/json
-
-{
-  "uuid": "{{card_uuid}}"
-}
+DELETE http://localhost:8081/card/{{card_uuid}}
+Accept: application/json
+Cookie: user={{user_uuid}}
 
 > {%
     client.test("Request is 200", function() {
@@ -78,6 +95,7 @@ Content-Type: application/json
 ### Verify Card is Deleted ###
 GET http://localhost:8081/card/{{card_uuid}}
 Accept: application/json
+Cookie: user={{user_uuid}}
 
 > {%
     client.test("Request is 404", function() {

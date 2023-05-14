@@ -59,7 +59,8 @@ public class Card { //implements OwnerUUID<UUID> {
     @Override
     public String toString() {
         return "Card{" +
-                "uuid=" + uuid +
+                "uuid=" + uuid + '\'' +
+                ", ownerUUID=" + ownerUUID + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
@@ -72,13 +73,4 @@ public class Card { //implements OwnerUUID<UUID> {
                 '}';
     }
 
-//    @Override
-//    public UUID getUUID() {
-//        return this.uuid;
-//    }
-//
-//    @Override
-//    public void setUUID(UUID uuid) {
-//        this.uuid = uuid;
-//    }
 }

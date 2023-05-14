@@ -78,7 +78,7 @@ public class CardService {
         cards.forEach(card -> {
             CardDTO cardDTO = new CardDTO();
             BeanUtils.copyProperties(card, cardDTO);
-            cardDTO.setUuid(card.getUuid().toString());
+            cardDTO.setUuid(card.getUuid());
             cardDTOs.add(cardDTO);
         });
         return cardDTOs;
