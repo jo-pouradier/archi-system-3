@@ -1,6 +1,10 @@
 # archi-system-3
 
 
+## Note
+
+Un Cookie est un seul objet clé: valeur. On ne peut pas avoir un cookie tel que user={id: 1, name: "toto"}. Il faut faire deux cookies: user_id=1 et user_name=toto.
+
 ## Architecture Diagram
 
 Notre architecture sera composé de 6 Services :
