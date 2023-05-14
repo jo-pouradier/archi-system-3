@@ -80,8 +80,11 @@ public class RestCardCtr {
     }
 
     @GetMapping(value = "/newUserSet")
-    public ResponseEntity<?> newUserSet(){
+    public ResponseEntity<?> newUserSet(@CookieValue("user") String cookieUserUuid){
         // FIXME est ce qu'on a besoin de tout User? On peut juste utiliser le cookie (qui est le user uuid), verifier avec authService si c'est un uuid d'un user.
+        if (cookieUserUuid == null) return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        //fetch user from http://localhost:8083/isUser/{uuid}
+
 //        cardService.newUserSet();
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
