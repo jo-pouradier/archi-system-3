@@ -10,10 +10,11 @@ function register(){
     }else {
         const data = {username: username, email: email, password: password1};
 
-        fetch('/register-form', {
+        fetch('http://localhost:8083/register', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify(data)
         }).then(function (response) {
@@ -21,7 +22,7 @@ function register(){
                 console.log(response.body);
                 try {
                     if (data !== "-1") {
-                        document.cookie = "userId=" + response.body + ";path=/";
+                        document.cookie = "userId=" + response.body.uuid + ";path=/";
                         window.location.href = "/html/login.html";
                     }
                 } catch (e) {

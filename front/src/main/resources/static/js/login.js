@@ -5,7 +5,7 @@ function login(){
     const password = document.getElementById("password").value;
     const data = {email: email, password: password};
     console.log(email, password);
-    fetch('/login-form', {
+    fetch('http://localhost:8083/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -27,8 +27,7 @@ function login(){
     }).then(function (data) {
         console.log(data);
         if(data != null) {
-            document.cookie = "user=" + JSON.stringify(data) + ";path=/" ;
-
+            document.cookie = "user=" + JSON.stringify(data.uuid) + ";path=/" ;
             window.location.href = "/";
         } else {
             console.log("error");
