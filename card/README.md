@@ -12,18 +12,19 @@ Just return a Status 200.
 
 ### GET '/getCards'
 
-Return all cards of the user.
+Return all cards.
 
 ### GET '/:uudi'
 
 Get the card with the given uuid. If the card does not exist, return a NOT_FOUND status.
 
-### GET '/getCardsByOwnerUUID/:uuid'
+### GET '/getCardsByOwnerUUID'
 
 Get all cards of the user with the given uuid. If the user does not exist, return a NOT_FOUND status.
 
 ### POST '/addCard'
 
+Add a new Card
 body:
 ```json
 {
@@ -38,9 +39,7 @@ body:
   "energy": 25
 }
 ```
-Add a new Card
-TODO: add the card to the right user. Use the cookie to get the user id.
 
-### DELETE '/deleteCard/:uuid'
+### DELETE '/:uuid'
 
 Delete the card with the given uuid. If the card does not exist, return a NOT_FOUND status. 
