@@ -60,13 +60,16 @@ public class RestCardCtr {
         return new ResponseEntity<>(cardDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{uuid}", produces = "application/json")
+    @DeleteMapping(value = "/{uuid}")
     public ResponseEntity<?> deleteCard(@PathVariable("uuid") String uuidString, @CookieValue("user") String cookieUserUuid){
-        if (cookieUserUuid == null) return new ResponseEntity<>("You must be authenticated", HttpStatus.UNAUTHORIZED);
+        System.out.println("uuidString = " + uuidString);
+        System.out.println("cookieUserUuid = " + cookieUserUuid);
+        if (cookieUserUuid == null) return new ResponseEntity<>(null ,HttpStatus.UNAUTHORIZED);
         UUID uuid = UUID.fromString(uuidString);
         if (!cardService.exists(uuid)) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         Card card = cardService.getCard(uuid);
-        if (card.getOwnerUUID() != UUID.fromString(cookieUserUuid)) {
+        System.out.println("card.getOwnerUUID() = " + card.getOwnerUUID());
+        if (card.getOwnerUUID().compareTo(UUID.fromString(cookieUserUuid)) != 0) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
         Card cardDeleted = cardService.deleteCard(uuid);

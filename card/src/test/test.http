@@ -48,6 +48,8 @@ Cookie: user={{user_uuid}}
     client.test("Request is 200", function() {
         client.assert(response.status === 200, "Response status is not 200");
     });
+    client.global.set("card_uuid", response.body.uuid);
+    client.global.set("user_uuid", response.body.ownerUUID);
 %}
 
 ### Get All Cards ###
@@ -58,8 +60,6 @@ Accept: application/json;
     client.test("Request is 200", function() {
         client.assert(response.status === 200, "Response status is not 200");
     });
-
-    client.global.set("card_uuid", response.body[0].uuid);
 %}
 
 ### Get Card by UUID ###
@@ -76,6 +76,8 @@ Accept: application/json
 < {%
 let card_uuid = client.global.get("card_uuid");
 client.log(card_uuid);
+let user_uuid = client.global.get("user_uuid");
+client.log(user_uuid);
 %}
 
 DELETE http://localhost:8081/card/{{card_uuid}}
