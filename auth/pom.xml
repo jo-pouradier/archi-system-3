@@ -23,6 +23,12 @@
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>fr.dtos.common</groupId>
+			<artifactId>dtos</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>

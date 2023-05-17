@@ -1,4 +1,4 @@
-package com.sp.model;
+package fr.dtos.common.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Builder(toBuilder = true, setterPrefix = "with")
 @AllArgsConstructor
-public class UserDTO implements OwnerUUID{
+public class UserDTO{
 
     public static final UserDTO NULL_USER = UserDTO
             .builder()
@@ -41,12 +41,11 @@ public class UserDTO implements OwnerUUID{
         this.name = name;
         this.email = email;
     }
-    @Override
+
     public UUID getUUID() {
         return this.uuid;
     }
 
-    @Override
     public void setUUID(UUID uuid) {
         this.uuid = uuid;
     }
