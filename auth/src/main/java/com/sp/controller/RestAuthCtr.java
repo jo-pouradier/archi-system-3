@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class RestAuthCtr {
 
-
     @Autowired
     private AuthService authService;
     @Autowired
