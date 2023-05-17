@@ -12,12 +12,12 @@ function isUserLoggedIn() {
             document.getElementById("Balance").innerHTML = user["balance"];
             return true;
         } else {
-            window.location.href = "/html/login.html";
+            window.location.href = "/front/html/login.html";
             return false;
         }
     }
     catch (e) {
-        window.location.href = "/html/login.html";
+        window.location.href = "/front/html/login.html";
         console.log(e);
     }
 

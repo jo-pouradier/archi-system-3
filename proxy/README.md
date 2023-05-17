@@ -44,3 +44,10 @@ docker-compose down
 #ou
 docker compose down
 ```
+
+
+lancer le docekr :
+```bash
+docker run --name my-custom-asi-nginx-container --network host -p 8089:80 -v C:\Users\pltel\Desktop\CPE\ArchiLogi\archi-system-3\proxy\nginx.conf:/etc/nginx/nginx.conf:ro -d nginx
+
+```

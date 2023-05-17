@@ -35,5 +35,5 @@ function login(){
     });
 }
 function  register() {
-    window.location.href = "/html/register.html";
+    window.location.href = "../html/register.html";
 }
