@@ -1,10 +1,7 @@
 package com.sp.service;
 
-import com.sp.model.Card;
 import com.sp.model.User;
-import com.sp.repository.SimpleUUIDAbstractRepository;
 import com.sp.repository.UserRepository;
-import com.sp.tools.CardFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +12,11 @@ import java.util.UUID;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private CardService cardService;
+//    @Autowired
+//    private CardService cardService;
     public User addUser(User user) {
         user = userRepository.save(user);
-        cardService.newUserSet(user);
+//        cardService.newUserSet(user);
         return user;
     }
 
