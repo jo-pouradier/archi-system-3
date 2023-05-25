@@ -9,8 +9,20 @@ Content-Type: application/json
     });
 %}
 
+### Test the second endpoint ###
+GET http://127.0.0.1:{{proxy_port}}/auth
+Accept: application/json
+Content-Type: application/json
+
+> {%
+    client.test("Request is 200", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
 ### Test to register ###
-POST http://localhost:{{proxy_port}}/auth/register
+POST http://127.0.0.1:{{proxy_port}}/auth/register
 Accept: application/json
 Content-Type: application/json
 
@@ -32,9 +44,9 @@ Content-Type: application/json
     let user_uuid = client.global.get("user_uuid");
     client.log(user_uuid);
 %}
-POST http://localhost:{{proxy_port}}/card/addCard
-Cookie: user={{user_uuid}}
+POST http://127.0.0.1:{{proxy_port}}/card/addCard
 Content-Type: application/json
+Cookie: user={{user_uuid}}; Path=/
 
 {
   "name": "first-card",
@@ -57,7 +69,7 @@ Content-Type: application/json
 %}
 
 ### Get All Cards ###
-GET http://localhost:{{proxy_port}}/card/getCards
+GET http://127.0.0.1:{{proxy_port}}/card/getCards
 Accept: application/json;
 
 > {%
@@ -67,7 +79,7 @@ Accept: application/json;
 %}
 
 ### Get Card by UUID ###
-GET http://localhost:{{proxy_port}}/card/{{card_uuid}}
+GET http://127.0.0.1:{{proxy_port}}/card/{{card_uuid}}
 Accept: application/json
 
 > {%
@@ -84,7 +96,7 @@ let user_uuid = client.global.get("user_uuid");
 client.log(user_uuid);
 %}
 
-DELETE http://localhost:{{proxy_port}}/card/{{card_uuid}}
+DELETE http://127.0.0.1:{{proxy_port}}/card/{{card_uuid}}
 Accept: application/json
 Cookie: user={{user_uuid}}
 
@@ -99,7 +111,7 @@ Cookie: user={{user_uuid}}
 %}
 
 ### Verify Card is Deleted ###
-GET http://localhost:{{proxy_port}}/card/{{card_uuid}}
+GET http://127.0.0.1:{{proxy_port}}/card/{{card_uuid}}
 Accept: application/json
 Cookie: user={{user_uuid}}
 

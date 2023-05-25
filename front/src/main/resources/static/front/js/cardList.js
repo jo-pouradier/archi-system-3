@@ -54,7 +54,7 @@ async function getUserCards(){
     console.log(user)
     user = JSON.parse(user);
     console.log(user);
-    let response = await fetch("/card/getCardsByOwnerUUID/"+user["uuid"]);
+    let response = await fetch("/card/getCardsByOwnerUUID/");
     if (response.status !== 200) {
         console.log("Error fetching cards");
         return null;

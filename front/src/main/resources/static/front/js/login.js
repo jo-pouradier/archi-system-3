@@ -28,7 +28,7 @@ function login(){
         console.log(data);
         if(data != null) {
             document.cookie = "user=" + JSON.stringify(data.uuid) + ";path=/" ;
-            window.location.href = "/";
+            window.location.href = "/front/index.html";
         } else {
             console.log("error");
         }
