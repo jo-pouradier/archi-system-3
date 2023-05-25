@@ -1,10 +1,15 @@
 ### Get status###
-GET http://localhost:{{proxy_port}}/auth
+GET http://127.0.0.1:{{proxy_port}}/auth
 Accept: application/json
 
+> {%
+    client.assert(response.status === 200, 'response status is not 200');
+    client.log('response body is ' + response.body);
+    client.global.set("user_id", response.body.uuid);
+%}
 
 ### Test to register ###
-POST http://localhost:{{proxy_port}}/auth/register
+POST http://127.0.0.1:{{proxy_port}}/auth/register
 Accept: application/json
 Content-Type: application/json
 
@@ -22,7 +27,7 @@ Content-Type: application/json
 
 
 ### Test to login ###
-POST http://localhost:{{proxy_port}}/auth/login
+POST http://127.0.0.1:{{proxy_port}}/auth/login
 Accept: application/json
 Content-Type: application/json
 
