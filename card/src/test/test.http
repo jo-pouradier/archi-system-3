@@ -64,8 +64,8 @@ Cookie: user={{user_uuid}}; Path=/
     client.test("Request is 200", function() {
         client.assert(response.status === 200, "Response status is not 200");
     });
-    // client.global.set("card_uuid", response.body.uuid);
-    // client.global.set("user_uuid", response.body.ownerUUID);
+    client.global.set("card_uuid", response.body.uuid);
+    client.global.set("user_uuid", response.body.ownerUUID);
 %}
 
 ### Get All Cards ###
