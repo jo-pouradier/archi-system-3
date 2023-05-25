@@ -44,9 +44,23 @@ public class CardService {
         return cards;
     }
 
+    public List<Card> newUserSet(UUID uuid){
+        //Give him 5 random Cards
+        List<Card> cards = CardFactory.generateRandomListFromTemplates(5);
+        this.setCards(uuid, cards);
+        return cards;
+    }
+
     private void setCards(User user, List<Card> cards) {
         cards.forEach(card -> {
             card.setOwnerUUID(user.getUUID());
+            cardRepository.save(card);
+        });
+    }
+
+    private void setCards(UUID uuid, List<Card> cards) {
+        cards.forEach(card -> {
+            card.setOwnerUUID(uuid);
             cardRepository.save(card);
         });
     }
