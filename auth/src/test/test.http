@@ -1,10 +1,10 @@
 ### Get status###
-GET http://localhost:8083/auth/
+GET http://localhost:{{proxy_port}}/auth
 Accept: application/json
 
 
 ### Test to register ###
-POST http://localhost:8083/auth/register
+POST http://localhost:{{proxy_port}}/auth/register
 Accept: application/json
 Content-Type: application/json
 
@@ -22,7 +22,7 @@ Content-Type: application/json
 
 
 ### Test to login ###
-POST http://localhost:8083/auth/login
+POST http://localhost:{{proxy_port}}/auth/login
 Accept: application/json
 Content-Type: application/json
 
@@ -30,4 +30,8 @@ Content-Type: application/json
   "email": "{{email}}",
   "password": "{{password}}"
 }
+
+> {%
+    client.assert(response.status === 200, 'response status is not 200');
+%}
 
