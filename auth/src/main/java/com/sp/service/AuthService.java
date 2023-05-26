@@ -1,6 +1,8 @@
 package com.sp.service;
 
 import com.sp.model.User;
+import fr.dtos.common.auth.AuthType;
+import fr.dtos.common.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ public class AuthService {
 
     @Autowired
     private UserService userService;
+
     public boolean logUser(String cookie) {
         return true;
     }
@@ -27,4 +30,13 @@ public class AuthService {
         return userService.addUser(new User(username, password, email));
     }
 
+    public AuthType getAuthType(String uuid) {
+        if (Utils.isSuperAdminKey(uuid)) {
+            return AuthType.SERVICE;
+        } else if (Utils.isUserKey(uuid)) {
+            return AuthType.USER;
+        }else{
+            return AuthType.NO_AUTH;
+        }
+    }
 }

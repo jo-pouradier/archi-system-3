@@ -2,6 +2,8 @@ package com.sp.service;
 
 import com.sp.model.User;
 import com.sp.repository.UserRepository;
+import fr.dtos.common.auth.AuthType;
+import fr.dtos.common.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +59,8 @@ public class UserService {
         getUser(uuid).setBalance(balance+value);
         return getUser(uuid).getBalance()==balance+value;
     }
+
+
 }
 
 

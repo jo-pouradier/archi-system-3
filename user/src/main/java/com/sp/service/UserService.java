@@ -2,6 +2,7 @@ package com.sp.service;
 
 import com.sp.model.User;
 import com.sp.repository.UserRepository;
+import fr.dtos.common.user.UserRegisterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ public class UserService {
     private UserRepository userRepository;
 //    @Autowired
 //    private CardService cardService;
-    public User addUser(User user) {
+    private User addUser(User user) {
         user = userRepository.save(user);
 //        cardService.newUserSet(user);
         return user;
@@ -58,6 +59,11 @@ public class UserService {
         float balance = getUser(uuid).getBalance();
         getUser(uuid).setBalance(balance+value);
         return getUser(uuid).getBalance()==balance+value;
+    }
+
+    public User createUser(UserRegisterDTO userRegisterDTO) {
+        User user = new User(userRegisterDTO.getName(), userRegisterDTO.getPassword(), userRegisterDTO.getEmail());
+        return addUser(user);
     }
 }
 

@@ -6,6 +6,7 @@ import com.sp.model.UserRegisterDTO;
 import com.sp.model.loginFormDTO;
 import com.sp.service.AuthService;
 import com.sp.service.UserService;
+import fr.dtos.common.auth.AuthType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
 public class RestAuthCtr {
 
     @Autowired
@@ -53,6 +53,14 @@ public class RestAuthCtr {
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getAuthType/{uuid}")
+    public ResponseEntity<AuthType> getAuthType(@PathVariable("uuid") String uuid) {
+        if (uuid == null) return new ResponseEntity<>(AuthType.NO_AUTH,HttpStatus.BAD_REQUEST);
+        AuthType authType = authService.getAuthType(uuid);
+        if (authType == AuthType.NO_AUTH) return new ResponseEntity<>(AuthType.NO_AUTH,HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(authType,HttpStatus.OK);
     }
 }
 

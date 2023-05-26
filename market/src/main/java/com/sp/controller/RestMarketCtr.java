@@ -17,7 +17,6 @@ import java.util.UUID;
 import static java.util.Objects.isNull;
 
 @RestController
-@RequestMapping("market")
 public class RestMarketCtr {
 
     /*

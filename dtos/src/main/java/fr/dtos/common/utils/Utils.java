@@ -1,9 +1,9 @@
 package fr.dtos.common.utils;
 
+import fr.dtos.common.auth.AuthType;
+import fr.dtos.common.user.UserDTO;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
@@ -26,16 +26,23 @@ public class Utils {
     }
 
     public static String getDefaultUrl(){
-        return "http://localhost:8084";
+        return "http://localhost:8000";
     }
 
-    public static <T, U> T requestService(EServices service, String path, U data, Class<T> responseType) {
+    public static <T, U> T requestService(EServices service, String path, U data, Class<T> responseType, HttpMethod method) {
         try{
-            RestTemplate restTemplate = new RestTemplateBuilder().build();
+            RestTemplate restTemplate = new RestTemplate();
 //        String url = getDefaultUrl() + "/" + service.getMap() + "/" + path;
-            String url = getDefaultUrl() + "/" + path;
-            HttpEntity<U> request = new HttpEntity<U>(data);
-            ResponseEntity<T> response = restTemplate.exchange(url, HttpMethod.POST, request, responseType);
+            String url = getDefaultUrl() + "/" + service.getMap() + "/" + path;
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.COOKIE,"user=" + Utils.getApiSuperAdminKey());
+            headers.add(HttpHeaders.ACCEPT,"application/json");
+            HttpEntity<U> request = new HttpEntity<U>(data,headers);
+            RequestEntity<U> requestEntity = new RequestEntity<U>(data,headers,method, new URL(url).toURI());
+            // set cookie
+            //request.getHeaders().add("Cookie", "user=" + Utils.getApiSuperAdminKey());
+
+            ResponseEntity<T> response = restTemplate.exchange(url, method, request, responseType);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 T responseBody = response.getBody();
@@ -49,7 +56,11 @@ public class Utils {
         }
         return null;
     }
-
-
-
+    public static <T, U> T requestService(EServices service, String path, U data, Class<T> responseType) {
+        return requestService(service, path, data, responseType, HttpMethod.GET);
+    }
+    public static boolean isUserKey(String uuid) {
+        UserDTO userDTO = requestService(EServices.USER_SERVICE, "getUser/"+uuid, null, UserDTO.class);
+        return userDTO != null;
+    }
 }
