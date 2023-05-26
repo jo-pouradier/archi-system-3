@@ -78,17 +78,10 @@ public class RestCardCtr {
         return new ResponseEntity<>(cardDTO, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/newUserSet")
-    public ResponseEntity<?> newUserSet(@CookieValue("user") String cookieUserUuid){
+    @GetMapping(value = "/newUserSet/{uuid}")
+    public ResponseEntity<?> newUserSet(@PathVariable("uuid") String cookieUserUuid){
         System.out.println("cookieUserUuid = " + cookieUserUuid);
-        // FIXME est ce qu'on a besoin de tout User? On peut juste utiliser le cookie (qui est le user uuid), verifier avec authService si c'est un uuid d'un user.
         if (cookieUserUuid == null) return new ResponseEntity<>("you must be authenticated", HttpStatus.UNAUTHORIZED);
-        //fetch user from http://localhost:8083/isUser/{uuid}
-        // TODO ceci est un test
-//        String uri = "http://localhost:8000/auth/isUser/" + cookieUserUuid;
-//        RestTemplate restTemplate = new RestTemplate();
-//        ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
-//        System.out.println("response = " + response);
         RestTemplate restTemplate = new RestTemplate();
 
         String uri = "http://127.0.0.1:8000/auth/isUser"; // or any other uri
@@ -104,64 +97,5 @@ public class RestCardCtr {
         cardService.newUserSet(UUID.fromString(cookieUserUuid));
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
-
-//    @GetMapping(value = "/newUserSet")
-//    public ResponseEntity<String> newUserSet(@CookieValue(value = "user") String cookieUserUuid) {
-//        if (cookieUserUuid == null) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be authenticated");
-//        }
-//
-//        WebClient client = WebClient.create();
-//        String uri = "http://127.0.0.1:8000/auth/isUser"; // or any other URI
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-//        headers.add(HttpHeaders.COOKIE, "user=" + cookieUserUuid);
-//
-//        Mono<ResponseEntity<String>> responseEntityMono = client.get()
-//                .uri(uri)
-//                .headers(httpHeaders -> httpHeaders.addAll(headers))
-//                .retrieve()
-//                .toEntity(String.class);
-//
-//        return responseEntityMono
-//                .flatMap(responseEntity -> {
-//                    System.out.println("result = " + responseEntity);
-//                    cardService.newUserSet(UUID.fromString(cookieUserUuid));
-//                    return Mono.just(ResponseEntity.ok().build());
-//                })
-//                .onErrorResume(throwable -> Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()))
-//                .block(); // Blocking for simplicity, consider using non-blocking approach in production
-//    }
-//@GetMapping(value = "/newUserSet")
-//public ResponseEntity<?> newUserSet(@CookieValue(value = "user", required = false) String cookieUserUuid) {
-//    if (cookieUserUuid == null) {
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be authenticated");
-//    }
-//
-//    WebClient client = WebClient.create();
-//    String uri = "http://127.0.0.1:8000/auth/isUser"; // or any other URI
-//
-//    HttpHeaders headers = new HttpHeaders();
-//    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-//    headers.add(HttpHeaders.COOKIE, "user=" + cookieUserUuid);
-//
-//   return client.get()
-//            .uri(uri)
-//            .headers(httpHeaders -> httpHeaders.addAll(headers))
-//            .retrieve()
-//            .bodyToMono(String.class)
-//            .flatMap(responseBody -> {
-//                if (responseBody != null && !responseBody.isEmpty()) {
-//                    List<Card> cards = cardService.newUserSet(UUID.fromString(cookieUserUuid));
-//                    System.out.println("cards = " + cards);
-//                    cards.forEach(System.out::println);
-//                    return Mono.just(ResponseEntity.ok().body(cards));
-//                } else {
-//                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
-//                }
-//            })
-//            .block(); // Blocking for simplicity, consider using non-blocking approach in production
-//}
 
 }

@@ -30,6 +30,17 @@ public class Utils {
         return "http://localhost:8000";
     }
 
+    /**
+     *
+     * @param service from EServices
+     * @param path uri of the service
+     * @param data body of the request
+     * @param responseType type of the response as dtos
+     * @param method HttpMethod (GET, POST, PUT, DELETE)
+     * @return the response as dtos
+     * @param <T> Response type
+     * @param <U> body type as dtos
+     */
     public static <T, U> T requestService(EServices service, String path, U data, Class<T> responseType, HttpMethod method) {
         try{
             RestTemplate restTemplate = new RestTemplate();

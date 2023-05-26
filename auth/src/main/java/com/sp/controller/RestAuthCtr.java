@@ -1,13 +1,16 @@
 package com.sp.controller;
 
+import fr.dtos.common.user.LoginFormDTO;
 import fr.dtos.common.user.UserDTO;
 import fr.dtos.common.user.UserRegisterDTO;
-import fr.dtos.common.user.LoginFormDTO;
 import com.sp.service.AuthService;
 import fr.dtos.common.auth.AuthType;
+import fr.dtos.common.utils.EServices;
 import fr.dtos.common.utils.Utils;
+import org.apache.tomcat.jni.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,15 +29,22 @@ public class RestAuthCtr {
     @PostMapping(value = "/login")
     public ResponseEntity<UserDTO> login(@RequestBody LoginFormDTO data) {
         System.out.println(data);
-        UserDTO userDTO = authService.login(data.getEmail(), data.getPassword());
-        if (userDTO == null) return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        UserDTO user = authService.login(data.getEmail(), data.getPassword());
+        if (user == null) return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(user, userDTO);
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
 
     @PostMapping(value = "/register")
     public UserDTO register(@RequestBody UserRegisterDTO data) {
-        UserDTO userDTO = authService.register(data.getName(),data.getPassword(), data.getEmail()); // on renvoie l'uuid ou null;
-        System.out.println(userDTO);
+        UserDTO user = authService.register(data.getName(),data.getPassword(), data.getEmail()); // on renvoie l'uuid ou null;
+        System.out.println(user);
+        // request card services to create a card set
+        String response = Utils.requestService(EServices.CARD_SERVICE, "newUserSet/"+user.getUUID(), null , String.class, HttpMethod.GET);
+        if (response != null) return null;
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(user, userDTO);
         return userDTO;
     }
 
