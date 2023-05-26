@@ -1,16 +1,40 @@
+function getUser() {
+
+    return user;
+}
+
+function updateUserHUD(uuid){
+    fetch('http://127.0.0.1:8000/user/getUser/' + uuid, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then( function(response) {
+        let data = response.json();
+        if(response.ok) {
+            return data;
+        } else {
+            alert(response.message);
+            return null;
+        }
+    }).then(function (data) {
+        if(data != null) {
+            document.getElementById("userNameId").innerHTML = data.name;
+            document.getElementById("Balance").innerHTML = name.balance;
+        } else {
+            console.log("error");
+        }
+    });
+}
+
 function isUserLoggedIn() {
     // use cookie to check if user is logged in
     // if not, redirect to login page
     console.log("isUserLoggedIn");
-
     try {
-        let user = getCookie('userJson');
-        user = JSON.parse(user);
-        console.log(user)
-        if (user["uuid"] !== -1 || user !== undefined) {
-            console.log("coucou" + user["name"])
-            document.getElementById("userNameId").innerHTML = user["name"];
-            document.getElementById("Balance").innerHTML = user["balance"];
+        let userUuid = getCookie('user');
+        if (userUuid !== undefined) {
+            updateUserHUD(userUuid);
             return true;
         } else {
             window.location.href = "/html/login.html";

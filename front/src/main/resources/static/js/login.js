@@ -27,7 +27,7 @@ function login(){
     }).then(function (data) {
         console.log(data);
         if(data != null) {
-            document.cookie = "user=" + JSON.stringify(data.uuid) +" userJson=" +JSON.stringify(data)+";path=/" ;
+            document.cookie = "user=" + JSON.stringify(data.uuid) +";path=/";
             window.location.href = "/index.html";
         } else {
             console.log("error");
