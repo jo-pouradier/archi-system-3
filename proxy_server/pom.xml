@@ -4,7 +4,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.tuto.springboot</groupId>
-	<artifactId>MarketApp</artifactId>
+	<artifactId>ProxyApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<description>Proxer application allowing to serve set of microservices</description>
