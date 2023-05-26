@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins={"http://localhost:8080", "http://localhost:8081", "http://localhost:8082", "http://localhost:8083", "http://localhost:8084", "http://localhost:8085"}, allowedHeaders = "*")
 @RequestMapping("card")
 public class RestCardCtr {
 
@@ -31,7 +30,8 @@ public class RestCardCtr {
         return new ResponseEntity<>(cardDTOS, HttpStatus.OK);
     }
     @GetMapping(value = "/{uuid}", produces = "application/json")
-    public ResponseEntity<CardDTO> getCard(@PathVariable("uuid") String uuid) {
+    public ResponseEntity<?> getCard(@PathVariable("uuid") String uuid) {
+        if (uuid == null) return new ResponseEntity<>("the uuid can't be null", HttpStatus.BAD_REQUEST);
         Card card = cardService.getCard(UUID.fromString(uuid));
         if (card == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         CardDTO cardDTO = new CardDTO();
@@ -52,6 +52,7 @@ public class RestCardCtr {
     public ResponseEntity<?> addCard(@RequestBody CardDTO cardDTO, @CookieValue("user") String cookieUserUuid){
         if (cardDTO == null) return new ResponseEntity<>("Your body is null", HttpStatus.BAD_REQUEST);
         if (cookieUserUuid == null) return new ResponseEntity<>("You need to be authenticated", HttpStatus.UNAUTHORIZED);
+//
         Card card = new Card();
         BeanUtils.copyProperties(cardDTO, card);
         card.setOwnerUUID(UUID.fromString(cookieUserUuid));

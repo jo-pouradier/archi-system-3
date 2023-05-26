@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins={"http://localhost:8080", "http://localhost:8081", "http://localhost:8082", "http://localhost:8083", "http://localhost:8084", "http://localhost:8085"}, allowedHeaders = "*")
 @RequestMapping("/auth")
 public class RestAuthCtr {
 
@@ -40,6 +39,7 @@ public class RestAuthCtr {
     @PostMapping(value = "/register")
     public UserDTO register(@RequestBody UserRegisterDTO data) {
         User user = authService.register(data.getUsername(),data.getPassword(), data.getEmail()); // on renvoie l'uuid ou null;
+        System.out.println(user);
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
         return userDTO;

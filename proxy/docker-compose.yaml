@@ -2,9 +2,10 @@
 version: '3'
 services:
   client:
-    container_name: nginx
+    container_name: nginx-asi
     image: nginx:latest
     volumes:
     - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "8079:80"
+
