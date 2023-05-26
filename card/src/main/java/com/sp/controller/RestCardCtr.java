@@ -1,15 +1,13 @@
 package com.sp.controller;
 
 import com.sp.model.Card;
-import com.sp.model.CardDTO;
+import fr.dtos.common.card.CardDTO;
 import com.sp.service.CardService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 
 import java.util.Collections;

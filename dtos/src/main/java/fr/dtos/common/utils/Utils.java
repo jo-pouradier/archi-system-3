@@ -1,6 +1,7 @@
 package fr.dtos.common.utils;
 
 import fr.dtos.common.auth.AuthType;
+import fr.dtos.common.card.CardDTO;
 import fr.dtos.common.user.UserDTO;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
@@ -60,7 +61,15 @@ public class Utils {
         return requestService(service, path, data, responseType, HttpMethod.GET);
     }
     public static boolean isUserKey(String uuid) {
-        UserDTO userDTO = requestService(EServices.USER_SERVICE, "getUser/"+uuid, null, UserDTO.class);
+        UserDTO userDTO = getUser(uuid);
         return userDTO != null;
+    }
+
+    public static UserDTO getUser(String uuid) {
+        return requestService(EServices.USER_SERVICE, "getUser/"+uuid, null, UserDTO.class);
+    }
+
+    public static CardDTO getCard(String uuid) {
+        return requestService(EServices.CARD_SERVICE, "getCard/"+uuid, null, CardDTO.class);
     }
 }

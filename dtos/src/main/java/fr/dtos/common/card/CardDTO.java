@@ -1,4 +1,4 @@
-package com.sp.model;
+package fr.dtos.common.card;
 
 import lombok.*;
 

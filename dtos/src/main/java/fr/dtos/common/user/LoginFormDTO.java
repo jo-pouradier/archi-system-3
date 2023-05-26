@@ -1,19 +1,19 @@
-package com.sp.model;
+package fr.dtos.common.user;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class loginFormDTO {
+public class LoginFormDTO {
 
     private String email;
     private String password;
 
-    public loginFormDTO() {
+    public LoginFormDTO() {
     }
 
-    public loginFormDTO(String email, String password) {
+    public LoginFormDTO(String email, String password) {
         this.email = email;
         this.password = password;
     }

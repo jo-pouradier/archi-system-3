@@ -1,7 +1,7 @@
 package com.sp.service;
 
 import com.sp.model.Card;
-import com.sp.model.CardDTO;
+import fr.dtos.common.card.CardDTO;
 import com.sp.model.User;
 import com.sp.repository.CardRepository;
 import com.sp.tools.CardFactory;
