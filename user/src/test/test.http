@@ -16,3 +16,17 @@ Content-Type: application/json
 GET http://localhost:8000/auth/getAuthType/{{uuid}}
 
 ###
+GET http://localhost:8000/user/getUser/{{uuid}}
+
+###
+
+GET http://localhost:8000/user/credit/{{uuid}}/100.25
+Accept: application/json
+###
+
+GET http://localhost:8000/user/debit/{{uuid}}/100.20
+Accept: application/json
+###
+
+GET http://localhost:8000/user/debit/{{uuid}}/100.25
+Accept: application/json

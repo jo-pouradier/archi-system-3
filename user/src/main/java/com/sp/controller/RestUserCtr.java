@@ -21,23 +21,23 @@ public class RestUserCtr {
 
     @Autowired
     private UserService userService;
-    @PostMapping(value ="/debit", produces = "application/json")
-    public ResponseEntity<?> debit(@RequestBody AdminKeyDataDTO<UserAndDataDTO<Integer>> adminKeyDataDTO) {
-        adminKeyDataDTO.isAdminKeyValid();
-        User user = null;
-        System.out.println("debit");
-        System.out.println(adminKeyDataDTO);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-    @PostMapping(value ="/credit", produces = "application/json")
-    public ResponseEntity<?> credit(@RequestBody AdminKeyDataDTO<UserAndDataDTO<Integer>> adminKeyDataDTO) {
-        adminKeyDataDTO.isAdminKeyValid();
-        User user = null;
-        System.out.println("credit");
-        System.out.println(adminKeyDataDTO);
-        Utils.requestService(EServices.USER_SERVICE, "debit", adminKeyDataDTO.getData(), UserDTO.class);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
+//    @PostMapping(value ="/debit", produces = "application/json")
+//    public ResponseEntity<?> debit(@RequestBody AdminKeyDataDTO<UserAndDataDTO<Integer>> adminKeyDataDTO) {
+//        adminKeyDataDTO.isAdminKeyValid();
+//        User user = null;
+//        System.out.println("debit");
+//        System.out.println(adminKeyDataDTO);
+//        return new ResponseEntity<>(user, HttpStatus.OK);
+//    }
+//    @PostMapping(value ="/credit", produces = "application/json")
+//    public ResponseEntity<?> credit(@RequestBody AdminKeyDataDTO<UserAndDataDTO<Integer>> adminKeyDataDTO) {
+//        adminKeyDataDTO.isAdminKeyValid();
+//        User user = null;
+//        System.out.println("credit");
+//        System.out.println(adminKeyDataDTO);
+//        Utils.requestService(EServices.USER_SERVICE, "debit", adminKeyDataDTO.getData(), UserDTO.class);
+//        return new ResponseEntity<>(user, HttpStatus.OK);
+//    }
 
     @PostMapping(value = "/createUser", produces = "application/json")
     public ResponseEntity<UserDTO> isUser(@RequestBody UserRegisterDTO userRegisterDTO) {
@@ -47,6 +47,29 @@ public class RestUserCtr {
         BeanUtils.copyProperties(user, userDTO);
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
+
+    @GetMapping(value = "/credit/{uuid}/{amount}", produces = "application/json")
+    public ResponseEntity<UserDTO> credit(@PathVariable("uuid") String uuid, @PathVariable("amount") Float amount) {
+        if (uuid == null) return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        User user = userService.credit(UUID.fromString(uuid), amount);
+        if (user == null) return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(user, userDTO);
+        return new ResponseEntity<>(userDTO,HttpStatus.OK);
+    }
+    @GetMapping(value = "/debit/{uuid}/{amount}", produces = "application/json")
+    public ResponseEntity<UserDTO> debit(@PathVariable("uuid") String uuid, @PathVariable("amount") Float amount) {
+        if (uuid == null) return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        boolean debit = userService.debit(UUID.fromString(uuid), amount);
+        User user = userService.getUser(UUID.fromString(uuid));
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(user, userDTO);
+        if (!debit) return new ResponseEntity<>(userDTO,HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(userDTO,HttpStatus.OK);
+    }
+
+
+
     @GetMapping(value = "/getUser/{uuid}")
     public ResponseEntity<?> isUser(@PathVariable("uuid") String uuid) {
         if (uuid == null) return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);

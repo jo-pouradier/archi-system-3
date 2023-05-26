@@ -47,18 +47,27 @@ public class UserService {
 
     public boolean debit(UUID uuid, float value) {
         User user = getUser(uuid);
+        if (user == null) return false;
         float balance = user.getBalance();
+        System.out.println("balance: "+balance);
         if (balance-value>=0.0){
             user.setBalance(balance-value);
+            updateUser(user);
             return true;
         }
         return false;
     }
 
-    public boolean depot(UUID uuid, float value){
+    public User updateUser(User user){
+        return userRepository.save(user);
+    }
+
+    public User credit(UUID uuid, float value){
+        User user = getUser(uuid);
         float balance = getUser(uuid).getBalance();
-        getUser(uuid).setBalance(balance+value);
-        return getUser(uuid).getBalance()==balance+value;
+        user.setBalance(balance+value);
+        updateUser(user);
+        return user;
     }
 
     public User createUser(UserRegisterDTO userRegisterDTO) {
