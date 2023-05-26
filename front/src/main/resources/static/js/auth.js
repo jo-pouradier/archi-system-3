@@ -4,8 +4,9 @@ function isUserLoggedIn() {
     console.log("isUserLoggedIn");
 
     try {
-        let user = getCookie('user');
+        let user = getCookie('userJson');
         user = JSON.parse(user);
+        console.log(user)
         if (user["uuid"] !== -1 || user !== undefined) {
             console.log("coucou" + user["name"])
             document.getElementById("userNameId").innerHTML = user["name"];

@@ -2,9 +2,9 @@ package com.sp.service;
 
 import com.sp.model.Card;
 import fr.dtos.common.card.CardDTO;
-import com.sp.model.User;
 import com.sp.repository.CardRepository;
 import com.sp.tools.CardFactory;
+import fr.dtos.common.user.UserDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,11 +33,11 @@ public class CardService {
         return cardRepository.existsById(uuid);
     }
 
-    public boolean isOwner(Card card, User user){
+    public boolean isOwner(Card card, UserDTO user){
         return card.getOwnerUUID().equals(user.getUUID());
     }
 
-    public List<Card> newUserSet(User user){
+    public List<Card> newUserSet(UserDTO user){
         //Give him 5 random Cards
         List<Card> cards = CardFactory.generateRandomListFromTemplates(5);
         this.setCards(user, cards);
@@ -51,7 +51,7 @@ public class CardService {
         return cards;
     }
 
-    private void setCards(User user, List<Card> cards) {
+    private void setCards(UserDTO user, List<Card> cards) {
         cards.forEach(card -> {
             card.setOwnerUUID(user.getUUID());
             cardRepository.save(card);
@@ -83,7 +83,7 @@ public class CardService {
         cardRepository.delete(card);
     }
 
-    public Card changeOwner(Card card, User to) {
+    public Card changeOwner(Card card, UserDTO to) {
         card.setOwnerUUID(to.getUUID());
         return cardRepository.update(card);
     }

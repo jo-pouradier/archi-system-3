@@ -3,9 +3,9 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "monNom",
+  "name": "monNom42",
   "password":"tp",
-  "email":"test@tp.tp"
+  "email":"tp@tp.tp"
 }
 > {%
     client.assert(response.status === 200, 'response status is not 200');

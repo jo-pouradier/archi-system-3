@@ -34,7 +34,7 @@ public class CardFactory {
         CardTemplate cardTemplate2 = CardTemplate
                 .builder()
                 .name("Joke")
-                .description(" Né dans une famille de clowns, il a développé un sens de l'humour tordu et malsain. Il aime semer la joie et la bonne humeur dans la ville en organisant des événements loufoques et distrayants. Son passé est empreint de souffrance et de solitude, mais il a choisi de transformer sa douleur en une mission pour faire rire les autres. Son humour tordu n'est souvent pas apprécié par les autres, mais il ne se laisse pas décourager et continue à faire ce qu'il aime.")
+                .description("Né dans une famille de clowns, il a développé un sens de l'humour tordu et malsain. Il aime semer la joie et la bonne humeur dans la ville en organisant des événements loufoques et distrayants. Son passé est empreint de souffrance et de solitude, mais il a choisi de transformer sa douleur en une mission pour faire rire les autres. Son humour tordu n'est souvent pas apprécié par les autres, mais il ne se laisse pas décourager et continue à faire ce qu'il aime.")
                 .family(EFamily.SUPER_HEROES.getName())
                 .affinity(EAffinity.FIRE.getName())
                 .hp(RandomUtils.randomIntCallback(0, 100))
@@ -89,7 +89,7 @@ public class CardFactory {
                 .attack(RandomUtils.randomIntCallback(0, 100))
                 .defense(RandomUtils.randomIntCallback(0, 100))
                 .energy(RandomUtils.randomIntCallback(0, 100))
-                .imageUrl("images/penguin.jpg")
+                .imageUrl("images/pinguin.jpg")
                 .build();
         float amount = (float) (1.0/6.0);
         cardTemplates.put(cardTemplate1, amount);

@@ -3,6 +3,9 @@ package com.sp.controller;
 import com.sp.model.Card;
 import fr.dtos.common.card.CardDTO;
 import com.sp.service.CardService;
+import fr.dtos.common.user.UserDTO;
+import fr.dtos.common.utils.EServices;
+import fr.dtos.common.utils.Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -32,6 +35,7 @@ public class RestCardCtr {
     }
     @GetMapping(value = "/{uuid}", produces = "application/json")
     public ResponseEntity<?> getCard(@PathVariable("uuid") String uuid) {
+        System.out.println("uuid = " + uuid);
         if (uuid == null) return new ResponseEntity<>("the uuid can't be null", HttpStatus.BAD_REQUEST);
         Card card = cardService.getCard(UUID.fromString(uuid));
         if (card == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -82,18 +86,9 @@ public class RestCardCtr {
     public ResponseEntity<?> newUserSet(@PathVariable("uuid") String cookieUserUuid){
         System.out.println("cookieUserUuid = " + cookieUserUuid);
         if (cookieUserUuid == null) return new ResponseEntity<>("you must be authenticated", HttpStatus.UNAUTHORIZED);
-        RestTemplate restTemplate = new RestTemplate();
-
-        String uri = "http://127.0.0.1:8000/auth/isUser"; // or any other uri
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.add("Cookie", "user=" + cookieUserUuid);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<?> result = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+        UserDTO userDTO = Utils.requestService(EServices.USER_SERVICE,"getUser/"+cookieUserUuid, null, UserDTO.class);
+        if(userDTO == null) return new ResponseEntity<>("user not found", HttpStatus.NOT_FOUND);
 //        return result.getBody();
-        System.out.println("result = " + result);
         cardService.newUserSet(UUID.fromString(cookieUserUuid));
         return new ResponseEntity<>(null, HttpStatus.OK);
     }

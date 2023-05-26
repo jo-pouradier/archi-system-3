@@ -62,7 +62,7 @@
 			<template id="row">
 				<tr>
 					<td>
-						<img  class="ui avatar image" src={{img_src}}> <span>{{name}} </span>
+						<img  class="ui avatar image" src={{img_src}}> <span>{{name}}</span>
 					</td>
 					<td >{{description}}</td>
 					<td>{{family_name}}</td>
@@ -89,9 +89,74 @@
 		<!------------------------------------------------------------------------->
 		<!--    ----------------------------- CARD ----------------------------- -->
 		<!------------------------------------------------------------------------->
-		<div class="ui special cards">
-			<div class="card">
+		<div id="cardViewContainer" class="ui special cards">
+			<template id="cardViewTemplate">
+				<div class="card">
+					<div class="content">
+						<div class="ui grid">
+							<div class="three column row">
+								<div class="column">
+									<i>♥</i><span>{{hp}}</span>
+								</div>
+								<div class="column">
+									<h5>{{family_name}}</h5>
+								</div>
+								<div class="column">
+									<span>{{energy}}</span> <i>🗲</i>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="image imageCard">
 
+						<div class="blurring dimmable image">
+							<div class="ui inverted dimmer">
+								<div class="content">
+									<div class="center">
+										<div class="ui primary button">Add Friend</div>
+									</div>
+								</div>
+							</div>
+							<div class="ui fluid image">
+								<a class="ui left corner label">
+									{{name}}
+								</a>
+								<img class="ui centered image" src="{{img_src}}">
+							</div>
+						</div>
+					</div>
+					<div class="content">
+						<div class="ui form tiny">
+							<div class="field">
+								<label></label>
+								<label for="cardDescriptionId">Description</label><textarea class="overflowHiden" readonly="" rows="2">{{description}}
+                    </textarea>
+							</div>
+						</div>
+					</div>
+					<div class="content">
+						<i>🗲</i><span>{{hp}}</span>
+						<div class="right floated ">
+							<span>{{energy}}</span>
+							<i>🗲</i>
+						</div>
+					</div>
+					<div class="content">
+            <span class="right floated">
+                    <span>{{attack}}</span>
+                <i>⚔</i>
+            </span>
+						<i>🛡</i>
+						<span>{{defense}}</span>
+					</div>
+					<div class="ui bottom attached button">
+						<i>💰</i>
+						Actual Value <span>{{price}}$</span>
+					</div>
+
+				</div>
+			</template>
+			<div class="card">
 				<div class="content">
 					<div class="ui grid">
 						<div class="three column row">
@@ -135,7 +200,7 @@
 					</div>
 				</div>
 				<div class="content">
-					<i class="heart outline icon"></i><span id="cardHPId"> HP 10</span>
+					<i class="heart outline icon"></i><span id="cardHPId2"> HP 10</span>
 					<div class="right floated ">
 						<span id="cardEnergyId">Energy 10</span>
 						<i class="lightning icon"></i>

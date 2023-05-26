@@ -15,7 +15,7 @@ function login(){
         console.log(response);
         let data = response.json();
         console.log(data);
-        console.log( response.body);
+        console.log(response.body);
         if(response.ok) {
             console.log("ok");
             return data;
@@ -27,7 +27,7 @@ function login(){
     }).then(function (data) {
         console.log(data);
         if(data != null) {
-            document.cookie = "user=" + JSON.stringify(data.uuid) + ";path=/" ;
+            document.cookie = "user=" + JSON.stringify(data.uuid) +" userJson=" +JSON.stringify(data)+";path=/" ;
             window.location.href = "/index.html";
         } else {
             console.log("error");

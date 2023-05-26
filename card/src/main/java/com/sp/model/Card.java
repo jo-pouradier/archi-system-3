@@ -32,7 +32,9 @@ public class Card { //implements OwnerUUID<UUID> {
     // SET as VARCHAR 1024
     @Column(length = 1024)
     private String name;
+    @Column(length = 1024)
     private String description;
+    @Column(length = 1024)
     private String imageUrl;
     private String family;
     private String affinity;
