@@ -56,4 +56,13 @@ public class RestUserCtr {
         BeanUtils.copyProperties(user, userDTO);
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
+    @GetMapping(value = "/getUserByEmail/{email}")
+    public ResponseEntity<?> getUserByEmail(@PathVariable("email") String email) {
+        if (email == null) return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        User user = userService.getUserByEmail(email);
+        if (user == null) return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(user, userDTO);
+        return new ResponseEntity<>(userDTO,HttpStatus.OK);
+    }
 }

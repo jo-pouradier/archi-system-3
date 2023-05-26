@@ -72,4 +72,12 @@ public class Utils {
     public static CardDTO getCard(String uuid) {
         return requestService(EServices.CARD_SERVICE, "getCard/"+uuid, null, CardDTO.class);
     }
+
+    public static UserDTO getUserByEmail(String email) {
+        return requestService(EServices.USER_SERVICE, "getUserByEmail/"+email, null, UserDTO.class);
+    }
+
+    public static UserDTO createUser(UserDTO user) {
+        return requestService(EServices.USER_SERVICE, "createUser", user, UserDTO.class, HttpMethod.POST);
+    }
 }

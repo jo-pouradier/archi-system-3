@@ -4,7 +4,7 @@ async function register(){
     const password1 = document.getElementById("password1").value;
     const password2 = document.getElementById("password2").value;
 
-    const data = {username: username, email: email, password: password1};
+    const data = {name: username, email: email, password: password1};
     console.log(JSON.stringify(data));
 
     const response = await fetch('http://127.0.0.1:8000/auth/register', {

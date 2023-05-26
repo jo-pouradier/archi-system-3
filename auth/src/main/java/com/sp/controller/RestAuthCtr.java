@@ -1,12 +1,11 @@
 package com.sp.controller;
 
-import com.sp.model.User;
 import fr.dtos.common.user.UserDTO;
 import fr.dtos.common.user.UserRegisterDTO;
 import fr.dtos.common.user.LoginFormDTO;
 import com.sp.service.AuthService;
-import com.sp.service.UserService;
 import fr.dtos.common.auth.AuthType;
+import fr.dtos.common.utils.Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +17,6 @@ public class RestAuthCtr {
 
     @Autowired
     private AuthService authService;
-    @Autowired
-    private UserService userService;
 
     @GetMapping(value = "/")
     public HttpStatus getStatus() {
@@ -29,29 +26,23 @@ public class RestAuthCtr {
     @PostMapping(value = "/login")
     public ResponseEntity<UserDTO> login(@RequestBody LoginFormDTO data) {
         System.out.println(data);
-        User user = authService.login(data.getEmail(), data.getPassword());
-        if (user == null) return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
-        UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(user, userDTO);
+        UserDTO userDTO = authService.login(data.getEmail(), data.getPassword());
+        if (userDTO == null) return new ResponseEntity<>(null,HttpStatus.FORBIDDEN);
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
 
     @PostMapping(value = "/register")
     public UserDTO register(@RequestBody UserRegisterDTO data) {
-        User user = authService.register(data.getName(),data.getPassword(), data.getEmail()); // on renvoie l'uuid ou null;
-        System.out.println(user);
-        UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(user, userDTO);
+        UserDTO userDTO = authService.register(data.getName(),data.getPassword(), data.getEmail()); // on renvoie l'uuid ou null;
+        System.out.println(userDTO);
         return userDTO;
     }
 
     @GetMapping(value = "/isUser/{uuid}")
     public ResponseEntity<?> isUser(@PathVariable("uuid") String uuid) {
         if (uuid == null) return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
-        User user = userService.getUser(uuid);
-        if (user == null) return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(user, userDTO);
+        UserDTO userDTO = Utils.getUser(uuid);
+        if (userDTO == null) return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
 
