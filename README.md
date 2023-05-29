@@ -1,5 +1,16 @@
 # archi-system-3
 
+# Elements du cahier des charges par membres
+
+Joseph: Mise en place du proxy. Mise en place test http pour Card Service et User. Mise en place service card
+
+Adrien: Légères modification front, travaillé sur le service market (back)
+
+Pierre-Louis: Auth service. Front index, fight, addCard, maintenance du site de test.
+
+Hugues: Intégration de différents services. Module DTO. Finission du front market. 
+
+# Elements du cahier des charges non réalise
 
 ## Note
 
@@ -7,7 +18,7 @@ Un Cookie est un seul objet clé: valeur. On ne peut pas avoir un cookie tel que
 
 ## Architecture Diagram
 
-Notre architecture sera composé de 6 Services :
+Notre architecture sera composé de 7 (le fight service n'étant pas présent) Services :
 
 ![Architecture Diagram](./docs/archi.png)
 
@@ -44,10 +55,6 @@ Permet seulement de mettre en ligne les fichier html, css et js.
 
 Pour partager les objets DTO entre les services, nous avons créé une librairie Maven qui contient les objets DTO et les interfaces des services.
 
-## Problèmes rencontrés
-
--> lorsque l'un utilisateur s'enregistre, il recoit 5 cartes. Comment sont elles générées ? la premiere fois qu'il s'enregistre AuthService appelle UserService pour creer l'utilisateur et lui donne aussi de l'argent d'ici on appelle CardService pour creer les cartes et les associer a l'utilisateur. Comment "proteger" la fonction generatrices des cartes ?
-
 ## TODO
 
-[ ] - Finir cardService et toutes les focntionnalités dont on aura besoin
+[ ] - Fight service front
