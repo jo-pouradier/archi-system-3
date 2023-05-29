@@ -121,7 +121,7 @@ public class RestCardCtr {
         return new ResponseEntity<>(cardDTO, HttpStatus.OK);
     }
     @GetMapping(value = "/changeOwner", produces = "application/json")
-    public ResponseEntity<?> changeOwner(@PathVariable("cardUUID") String cardUUIDString, @PathVariable("newOwnerUUID") String newOwnerUUIDString, @CookieValue("user") String cookieUserUuid){
+    public ResponseEntity<?> changeOwner(@RequestParam("cardUUID") String cardUUIDString, @RequestParam("newOwnerUUID") String newOwnerUUIDString, @CookieValue("user") String cookieUserUuid){
         System.out.println("cardUUIDString = " + cardUUIDString + "\nnewOwnerUUIDString = " + newOwnerUUIDString + "\ncookieUserUuid = " + cookieUserUuid);
         if (cardUUIDString == null || newOwnerUUIDString == null) return new ResponseEntity<>("Your body is null", HttpStatus.BAD_REQUEST);
         if (cookieUserUuid == null && !Utils.isUserKey(cookieUserUuid)) return new ResponseEntity<>("You need to be authenticated", HttpStatus.UNAUTHORIZED);

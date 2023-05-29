@@ -112,6 +112,6 @@ public class Utils {
     }
 
     public static void changeOwner(CardDTO card, UserDTO to) {
-        requestService(EServices.CARD_SERVICE, "changeOwner/"+card.getUuid()+"/"+to.getUUID(), null, CardDTO.class, HttpMethod.GET);
+        requestService(EServices.CARD_SERVICE, "changeOwner?cardUUID="+card.getUuid()+"&newOwnerUUID="+to.getUUID(), null, CardDTO.class, HttpMethod.GET);
     }
 }
