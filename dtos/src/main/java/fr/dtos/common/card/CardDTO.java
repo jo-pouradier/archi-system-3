@@ -20,13 +20,14 @@ public class CardDTO{
     private int attack;
     private int defense;
     private int energy;
+    private float price;
 
     public CardDTO(){
 
     }
 
     // FIXME j'ai l'impression que ce constructeur est inutile
-    public CardDTO(String name, String description, String imageUrl, String family, String affinity, int hp, int attack, int defense, int energy) {
+    public CardDTO(String name, String description, String imageUrl, String family, String affinity, int hp, int attack, int defense, int energy, int price) {
         this.name = name;
         this.description = description;
         this.imageUrl = imageUrl;
@@ -36,6 +37,7 @@ public class CardDTO{
         this.attack = attack;
         this.defense = defense;
         this.energy = energy;
+        this.price = price;
     }
 
     @Override
@@ -52,6 +54,7 @@ public class CardDTO{
                 ", attack=" + attack +
                 ", defense=" + defense +
                 ", energy=" + energy +
+                ", price=" + price +
                 '}';
     }
 }

@@ -37,13 +37,13 @@ public class RestAuthCtr {
     @PostMapping(value = "/register")
     public UserDTO register(@RequestBody UserRegisterDTO data) {
         UserDTO userDTO = authService.register(data.getName(), data.getPassword(), data.getEmail()); // on renvoie l'uuid ou null;
-        System.out.println(userDTO);
+        //System.out.println(userDTO);
         // create user in UserService
-        userDTO = Utils.requestService(EServices.USER_SERVICE, "createUser", userDTO, UserDTO.class, HttpMethod.POST);
+        userDTO = Utils.requestService(EServices.USER_SERVICE, "getUser/"+userDTO.getUUID().toString(), userDTO, UserDTO.class, HttpMethod.GET);
         if (userDTO == null) return null;
         // request card services to create a card set
         String response = Utils.requestService(EServices.CARD_SERVICE, "newUserSet/" + userDTO.getUUID(), null, String.class, HttpMethod.GET);
-        if (response != null) return null;
+        if (response != null) return userDTO;
         userDTO = new UserDTO();
         return userDTO;
     }

@@ -19,7 +19,7 @@ async function register(){
         console.log(response.body);
         try {
             if (data !== "-1") {
-                document.cookie = "userId=" + response.body.uuid + ";path=/";
+                document.cookie = "user=" + response.body.uuid + ";path=/";
                 window.location.href = "../html/login.html";
             }
         } catch (e) {

@@ -5,7 +5,7 @@ function getUser() {
 
 function updateUserHUD(uuid){
     fetch('http://127.0.0.1:8000/user/getUser/' + uuid, {
-        method: 'POST',
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
@@ -20,7 +20,7 @@ function updateUserHUD(uuid){
     }).then(function (data) {
         if(data != null) {
             document.getElementById("userNameId").innerHTML = data.name;
-            document.getElementById("Balance").innerHTML = name.balance;
+            document.getElementById("balanceID").innerHTML = data.balance;
         } else {
             console.log("error");
         }
@@ -30,10 +30,9 @@ function updateUserHUD(uuid){
 function isUserLoggedIn() {
     // use cookie to check if user is logged in
     // if not, redirect to login page
-    console.log("isUserLoggedIn");
     try {
         let userUuid = getCookie('user');
-        if (userUuid !== undefined) {
+        if (userUuid !== undefined || userUuid == "" || userUuid == null) {
             updateUserHUD(userUuid);
             return true;
         } else {
@@ -43,7 +42,6 @@ function isUserLoggedIn() {
     }
     catch (e) {
         window.location.href = "/html/login.html";
-        console.log(e);
     }
 
 

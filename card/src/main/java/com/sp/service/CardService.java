@@ -98,4 +98,7 @@ public class CardService {
         });
         return cardDTOs;
     }
+
+    public void updatePrice(Card card) {
+    }
 }

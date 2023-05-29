@@ -1,18 +1,12 @@
-package com.sp.model;
+package fr.dtos.common.market;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.util.UUID;
 
-@Entity
-public class Transaction {
+public class TransactionDTO {
 
-    @Id
-    @GeneratedValue
     @Getter
     @Setter
     private UUID transcationUUID = null;
@@ -43,17 +37,5 @@ public class Transaction {
 
     public boolean isUncomplete() {
         return status.equals("uncomplete");
-    }
-
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "transcationUUID=" + transcationUUID +
-                ", cardUUID=" + cardUUID +
-                ", fromUserUUID=" + fromUserUUID +
-                ", toUserUUID=" + toUserUUID +
-                ", price=" + price +
-                ", status='" + status + '\'' +
-                '}';
     }
 }

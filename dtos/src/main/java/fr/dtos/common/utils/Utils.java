@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 public class Utils {
 
@@ -58,7 +59,7 @@ public class Utils {
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 T responseBody = response.getBody();
-                System.out.println(responseBody);
+                System.out.println("Request service " + service.getName()+"("+path+"): "+ responseBody);
                 return responseBody;
             } else {
                 System.out.println("La requête a échoué avec le code : " + response.getStatusCode());
@@ -79,7 +80,12 @@ public class Utils {
     public static UserDTO getUser(String uuid) {
         return requestService(EServices.USER_SERVICE, "getUser/"+uuid, null, UserDTO.class);
     }
-
+    public static UserDTO getUser(UUID uuid) {
+        return getUser(uuid.toString());
+    }
+    public static CardDTO getCard(UUID uuid) {
+        return getCard(uuid.toString());
+    }
     public static CardDTO getCard(String uuid) {
         return requestService(EServices.CARD_SERVICE, "getCard/"+uuid, null, CardDTO.class);
     }
@@ -89,6 +95,19 @@ public class Utils {
     }
 
     public static UserDTO createUser(UserDTO user) {
-        return requestService(EServices.USER_SERVICE, "createUser", user, UserDTO.class, HttpMethod.POST);
+        return requestService(EServices.USER_SERVICE, "createUser/", user, UserDTO.class, HttpMethod.POST);
+    }
+
+    public static CardDTO[] getOwnerCards(String uuid){
+        return requestService(EServices.CARD_SERVICE, "getCardsByOwner/"+uuid, null, CardDTO[].class);
+    }
+
+    public static void debit(UUID uuid, float price) {
+    }
+
+    public static void depot(UUID uuid, float price) {
+    }
+
+    public static void changeOwner(CardDTO card, UserDTO to) {
     }
 }

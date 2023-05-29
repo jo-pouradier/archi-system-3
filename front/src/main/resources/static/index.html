@@ -12,6 +12,7 @@
 	<link rel="stylesheet" type="text/css" href="/lib/Semantic-UI-CSS-master/semantic.min.css">
 	<link rel="stylesheet" type="text/css" href="/css/custom.css">
 	<script src="/js/auth.js"></script>
+	<script src="/js/index.js"></script>
 
 
 </head>
@@ -20,15 +21,16 @@
 <div class="ui clearing segment">
 	<h3 class="ui right floated header">
 		<a href="/html/addCard.html">Add Card</a>
-		<i class="user circle outline icon"></i>
+		<br>
+		<i>☃</i>
 		<div class="content">
 			<span id="userNameId">Jdoe</span>
-			<div class="sub header"><span id="Balance">5000</span>$</div>
+			<div class="sub header"><span id="balanceID">5000</span>$</div>
 		</div>
 	</h3>
 
 	<h3 class="ui left floated header">
-		<i class="money icon"></i>
+		<i>💶</i>
 		<div class="content">
 			<a href="/html/market.html">BUY</a>
 			<div class="sub header">Buy cards to get stronger</div>
@@ -72,10 +74,10 @@
 					<td>{{attack}}</td>
 					<td>{{price}}$</td>
 					<td>
-						<div class="ui vertical animated button" tabindex="0">
-							<div class="hidden content">Sell</div>
+						<div id="sellButton" class="ui vertical animated button" tabindex="0">
+							<div class="hidden content">{{sell_button}}</div>
 							<div class="visible content">
-								<i class="shop icon"></i>
+								💰
 							</div>
 						</div>
 					</td>
@@ -91,7 +93,7 @@
 		<!------------------------------------------------------------------------->
 		<div id="cardViewContainer" class="ui special cards">
 			<template id="cardViewTemplate">
-				<div class="card">
+				<div uuid="{{uuid}}" class="card">
 					<div class="content">
 						<div class="ui grid">
 							<div class="three column row">
@@ -149,7 +151,7 @@
 						<i>🛡</i>
 						<span>{{defense}}</span>
 					</div>
-					<div class="ui bottom attached button">
+					<div id="sellButton2" class="ui bottom attached button">
 						<i>💰</i>
 						Actual Value <span>{{price}}$</span>
 					</div>

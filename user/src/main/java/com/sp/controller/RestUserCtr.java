@@ -42,10 +42,12 @@ public class RestUserCtr {
     @PostMapping(value = "/createUser", produces = "application/json")
     public ResponseEntity<UserDTO> createUser(@RequestBody UserRegisterDTO userRegisterDTO) {
         User user = userService.createUser(userRegisterDTO);
+        userService.credit(user.getUUID(),5000);
+
         if (user == null) return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
-        Utils.requestService(EServices.CARD_SERVICE, "newUserSet/"+userDTO.getUUID().toString(), null, UserDTO.class);
+        System.out.println("Create user: "+userDTO);
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
 
@@ -78,6 +80,7 @@ public class RestUserCtr {
         if (user == null) return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
+        System.out.println("Get user: "+userDTO);
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
     @GetMapping(value = "/getUserByEmail/{email}")

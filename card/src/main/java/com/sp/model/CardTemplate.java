@@ -43,12 +43,15 @@ public class CardTemplate {
     @Getter
     @Setter
     private Callback<Integer> energy;
+    @Getter
+    @Setter
+    private Callback<Integer> price;
 
     public CardTemplate() {
 
     }
 
-    public CardTemplate(String name, String description, String imageUrl, String family, String affinity, Callback<Integer> hp, Callback<Integer> attack, Callback<Integer> defense, Callback<Integer> energy) {
+    public CardTemplate(String name, String description, String imageUrl, String family, String affinity, Callback<Integer> hp, Callback<Integer> attack, Callback<Integer> defense, Callback<Integer> energy, Callback<Integer> price) {
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.description = description;
@@ -59,6 +62,7 @@ public class CardTemplate {
         this.attack = attack;
         this.defense = defense;
         this.energy = energy;
+        this.price = price;
     }
 
     public Card getRandomCard() {
@@ -73,6 +77,7 @@ public class CardTemplate {
                 .attack(attack.run())
                 .defense(defense.run())
                 .energy(energy.run())
+                .price(price.run())
                 .build();
     }
 }

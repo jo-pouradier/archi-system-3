@@ -3,6 +3,7 @@ package com.sp.controller;
 import com.sp.model.Card;
 import fr.dtos.common.card.CardDTO;
 import com.sp.service.CardService;
+import fr.dtos.common.market.TransactionDTO;
 import fr.dtos.common.user.UserDTO;
 import fr.dtos.common.utils.EServices;
 import fr.dtos.common.utils.Utils;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +35,7 @@ public class RestCardCtr {
         List<CardDTO> cardDTOS = cardService.convertToDTO(cardService.getCards());
         return new ResponseEntity<>(cardDTOS, HttpStatus.OK);
     }
-    @GetMapping(value = "/{uuid}", produces = "application/json")
+    @GetMapping(value = "getCard/{uuid}", produces = "application/json")
     public ResponseEntity<?> getCard(@PathVariable("uuid") String uuid) {
         System.out.println("uuid = " + uuid);
         if (uuid == null) return new ResponseEntity<>("the uuid can't be null", HttpStatus.BAD_REQUEST);
@@ -44,13 +46,18 @@ public class RestCardCtr {
         return new ResponseEntity<>(cardDTO, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/getCardsByOwner", produces = "application/json")
-    public ResponseEntity<?> getCardsByOwnerUUID(@CookieValue("user") String cookieUserUuid) {
+    @GetMapping(value = "/getCardsByOwner/{uuid}", produces = "application/json")
+    public ResponseEntity<?> getCardsByOwnerUUID(@PathVariable("uuid") String uuidString, @CookieValue("user") String cookieUserUuid) {
+//        System.out.println("getCardsByOwner");
+//        System.out.println("uuid = " + uuidString);
+//        System.out.println("cookieUserUuid = " + cookieUserUuid);
         if (cookieUserUuid == null) return new ResponseEntity<>("You must be authenticated", HttpStatus.UNAUTHORIZED);
-        List<Card> cards = cardService.getCardsByOwnerUUID(UUID.fromString(cookieUserUuid));
+        List<Card> cards = cardService.getCardsByOwnerUUID(UUID.fromString(uuidString));
         if (cards == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         List<CardDTO> cardDTOS = cardService.convertToDTO(cards);
-        return new ResponseEntity<>(cardDTOS, HttpStatus.OK);
+        //System.out.println(Arrays.toString(cardDTOS.toArray()));
+        //System.out.println(Arrays.toString(cardService.getCards().toArray()));
+        return new ResponseEntity<>(cardDTOS.toArray(), HttpStatus.OK);
     }
 
     @PostMapping (value = "/addCard", produces = "application/json")
@@ -83,14 +90,31 @@ public class RestCardCtr {
     }
 
     @GetMapping(value = "/newUserSet/{uuid}")
-    public ResponseEntity<?> newUserSet(@PathVariable("uuid") String cookieUserUuid){
-        System.out.println("cookieUserUuid = " + cookieUserUuid);
-        if (cookieUserUuid == null) return new ResponseEntity<>("you must be authenticated", HttpStatus.UNAUTHORIZED);
-        UserDTO userDTO = Utils.requestService(EServices.USER_SERVICE,"getUser/"+cookieUserUuid, null, UserDTO.class);
+    public ResponseEntity<?> newUserSet(@PathVariable("uuid") String uuidString, @CookieValue("user") String cookieUserUuid){
+        //System.out.println("cookieUserUuid = " + cookieUserUuid);
+        //System.out.println("uuidString = " + uuidString);
+        if (cookieUserUuid == null || !Utils.getApiSuperAdminKey().equals(cookieUserUuid)) return new ResponseEntity<>("you must be authenticated", HttpStatus.UNAUTHORIZED);
+        UserDTO userDTO = Utils.requestService(EServices.USER_SERVICE,"getUser/"+uuidString, null, UserDTO.class);
+        //System.out.println("userDTO = " + userDTO);
         if(userDTO == null) return new ResponseEntity<>("user not found", HttpStatus.NOT_FOUND);
 //        return result.getBody();
-        cardService.newUserSet(UUID.fromString(cookieUserUuid));
+        cardService.newUserSet(UUID.fromString(uuidString));
+        //System.out.println("Created new set" + cardService.getCardsByOwnerUUID(UUID.fromString(uuidString)));
         return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/updatePrice", produces = "application/json")
+    public ResponseEntity<?> updatePrice(@RequestBody TransactionDTO transactionDTO, @CookieValue("user") String cookieUserUuid){
+        System.out.println("transactionDTO = " + transactionDTO + "\ncookieUserUuid = " + cookieUserUuid);
+        if (transactionDTO == null) return new ResponseEntity<>("Your body is null", HttpStatus.BAD_REQUEST);
+        if (cookieUserUuid == null && !Utils.isUserKey(cookieUserUuid)) return new ResponseEntity<>("You need to be authenticated", HttpStatus.UNAUTHORIZED);
+        Card card = cardService.getCard(transactionDTO.getCardUUID());
+        if (card == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        card.setPrice(transactionDTO.getPrice());
+        cardService.saveCard(card);
+        CardDTO cardDTO = new CardDTO();
+        BeanUtils.copyProperties(card, cardDTO);
+        return new ResponseEntity<>(cardDTO, HttpStatus.OK);
     }
 
 }

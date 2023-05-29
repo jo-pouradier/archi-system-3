@@ -30,6 +30,7 @@ public class CardFactory {
                 .defense(RandomUtils.randomIntCallback(0, 100))
                 .energy(RandomUtils.randomIntCallback(0, 100))
                 .imageUrl("images/aquagirl.jpg")
+                .price(priceCallback())
                 .build();
         CardTemplate cardTemplate2 = CardTemplate
                 .builder()
@@ -42,6 +43,7 @@ public class CardFactory {
                 .defense(RandomUtils.randomIntCallback(0, 100))
                 .energy(RandomUtils.randomIntCallback(0, 100))
                 .imageUrl("images/joke.jpg")
+                .price(priceCallback())
                 .build();
         CardTemplate cardTemplate3 = CardTemplate
                 .builder()
@@ -54,6 +56,7 @@ public class CardFactory {
                 .defense(RandomUtils.randomIntCallback(0, 100))
                 .energy(RandomUtils.randomIntCallback(0, 100))
                 .imageUrl("images/catman.jpg")
+                .price(priceCallback())
                 .build();
         CardTemplate cardTemplate4 = CardTemplate
                 .builder()
@@ -66,6 +69,7 @@ public class CardFactory {
                 .defense(RandomUtils.randomIntCallback(0, 100))
                 .energy(RandomUtils.randomIntCallback(0, 100))
                 .imageUrl("images/superalien.jpg")
+                .price(priceCallback())
                 .build();
         CardTemplate cardTemplate5 = CardTemplate
                 .builder()
@@ -78,6 +82,7 @@ public class CardFactory {
                 .defense(RandomUtils.randomIntCallback(0, 100))
                 .energy(RandomUtils.randomIntCallback(0, 100))
                 .imageUrl("images/wonderman.jpg")
+                .price(priceCallback())
                 .build();
         CardTemplate cardTemplate6 = CardTemplate
                 .builder()
@@ -90,6 +95,7 @@ public class CardFactory {
                 .defense(RandomUtils.randomIntCallback(0, 100))
                 .energy(RandomUtils.randomIntCallback(0, 100))
                 .imageUrl("images/pinguin.jpg")
+                .price(priceCallback())
                 .build();
         float amount = (float) (1.0/6.0);
         cardTemplates.put(cardTemplate1, amount);
@@ -98,6 +104,15 @@ public class CardFactory {
         cardTemplates.put(cardTemplate4, amount);
         cardTemplates.put(cardTemplate5, amount);
         cardTemplates.put(cardTemplate6, amount);
+    }
+
+    public static Callback<Integer> priceCallback(){
+        return new Callback<Integer>() {
+            @Override
+            public Integer run() {
+                return -1;
+            }
+        };
     }
 
     public static List<Card> generateRandomListFromTemplates(int size){

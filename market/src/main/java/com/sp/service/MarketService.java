@@ -1,13 +1,15 @@
 package com.sp.service;
 
-import com.sp.model.Card;
 import com.sp.model.Transaction;
-import com.sp.model.User;
 import com.sp.repository.MarketRepository;
+import fr.dtos.common.card.CardDTO;
+import fr.dtos.common.user.UserDTO;
+import fr.dtos.common.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,22 +20,18 @@ public class MarketService {
     private MarketRepository market;
 
     @Autowired
-    private CardService cardService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
     private MarketRepository marketRepository;
 
     public Transaction createTransaction(Transaction transaction) {
-        User from = userService.getUser(transaction.getFromUserUUID());
-        Card card = cardService.getCard(transaction.getCardUUID());
+        UserDTO from = Utils.getUser(transaction.getFromUserUUID());
+        CardDTO card = Utils.getCard(transaction.getCardUUID());
         if (from != null && card != null) {
-            Transaction exist = getByFromAndCard(from.getUUID(), card.getUUID(), "pending");
+            Transaction exist = getByFromAndCard(from.getUUID(), card.getUuid(), "pending");
             if (exist != null && exist.isPending())
                 return null;
-            if (cardService.getCardsByOwnerUUID(from.getUUID()).contains(card)) {
+            CardDTO[] cardDTOS = Utils.getOwnerCards(from.getUUID().toString());
+            List<CardDTO> cardDTOList = Arrays.asList(cardDTOS);
+            if (cardDTOList.contains(card)) {
                 transaction.setStatus("pending");
                 transaction = marketRepository.save(transaction);
                 return transaction;
@@ -73,11 +71,15 @@ public class MarketService {
     public Transaction cancelTransaction(Transaction transaction) {
         if (!isValidCancelTransaction(transaction))
             return null;
-        User from = userService.getUser(transaction.getFromUserUUID());
-        Card card = cardService.getCard(transaction.getCardUUID());
+        UserDTO from = Utils.getUser(transaction.getFromUserUUID());
+        CardDTO card = Utils.getCard(transaction.getCardUUID());
         if (from != null && card != null) {
-            if (cardService.getCardsByOwnerUUID(from.getUUID()).contains(card)) {
+            CardDTO[] cardDTOS = Utils.getOwnerCards(from.getUUID().toString());
+            List<CardDTO> cardDTOList = Arrays.asList(cardDTOS);
+            if (cardDTOList.contains(card)) {
                 transaction.setStatus("canceled");
+                marketRepository.save(transaction);
+                marketRepository.delete(transaction);
                 return transaction;
             }
         }
@@ -93,20 +95,22 @@ public class MarketService {
     public Transaction acceptTransaction(Transaction transaction) {
         if (!isValidAcceptTransaction(transaction))
             return null;
-        User from = userService.getUser(transaction.getFromUserUUID());
-        User to = userService.getUser(transaction.getToUserUUID());
-        Card card = cardService.getCard(transaction.getCardUUID());
+        UserDTO from = Utils.getUser(transaction.getFromUserUUID());
+        UserDTO to = Utils.getUser(transaction.getToUserUUID());
+        CardDTO card = Utils.getCard(transaction.getCardUUID());
         if (from != null && card != null && to != null) {
-            Transaction valid =  getByFromAndCard(from.getUUID(), card.getUUID(), "pending");
+            Transaction valid =  getByFromAndCard(from.getUUID(), card.getUuid(), "pending");
             if (valid == null)
                 return null;
             if (valid.getPrice() > to.getBalance())
                 return null;
-            if (cardService.getCardsByOwnerUUID(from.getUUID()).contains(card)) {
+            CardDTO[] cardDTOS = Utils.getOwnerCards(from.getUUID().toString());
+            List<CardDTO> cardDTOList = Arrays.asList(cardDTOS);
+            if (cardDTOList.contains(card)) {
                 transaction.setStatus("accepted");
-                cardService.changeOwner(card, to);
-                userService.debit(to.getUUID(), valid.getPrice());
-                userService.depot(from.getUUID(), valid.getPrice());
+                Utils.changeOwner(card, to);
+                Utils.debit(to.getUUID(), valid.getPrice());
+                Utils.depot(from.getUUID(), valid.getPrice());
                 return transaction;
             }
         }

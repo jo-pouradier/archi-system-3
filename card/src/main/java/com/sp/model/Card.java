@@ -1,5 +1,6 @@
 package com.sp.model;
 
+import com.sp.tools.Callback;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,6 +23,7 @@ public class Card { //implements OwnerUUID<UUID> {
             .attack(0)
             .defense(0)
             .energy(0)
+            .price(-1)
             .build();
 
     @Id
@@ -42,11 +44,12 @@ public class Card { //implements OwnerUUID<UUID> {
     private int attack;
     private int defense;
     private int energy;
+    private float price;
 
     public Card(){
     }
 
-    public Card(String name, String description, String imageUrl, String family, String affinity, int hp, int attack, int defense, int energy) {
+    public Card(String name, String description, String imageUrl, String family, String affinity, int hp, int attack, int defense, int energy, int price) {
         this.name = name;
         this.description = description;
         this.imageUrl = imageUrl;
@@ -56,13 +59,14 @@ public class Card { //implements OwnerUUID<UUID> {
         this.attack = attack;
         this.defense = defense;
         this.energy = energy;
+        this.price = price;
     }
 
     @Override
     public String toString() {
         return "Card{" +
-                "uuid=" + uuid + '\'' +
-                ", ownerUUID=" + ownerUUID + '\'' +
+                "uuid=" + uuid +
+                ", ownerUUID=" + ownerUUID +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
@@ -72,7 +76,7 @@ public class Card { //implements OwnerUUID<UUID> {
                 ", attack=" + attack +
                 ", defense=" + defense +
                 ", energy=" + energy +
+                ", price=" + price +
                 '}';
     }
-
 }
