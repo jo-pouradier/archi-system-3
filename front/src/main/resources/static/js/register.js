@@ -7,7 +7,7 @@ async function register(){
     const data = {name: username, email: email, password: password1};
     console.log(JSON.stringify(data));
 
-    const response = await fetch('http://127.0.0.1:8000/auth/register', {
+    const response = await fetch('/auth/register', {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
