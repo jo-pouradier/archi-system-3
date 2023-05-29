@@ -12,7 +12,7 @@ Adrien: Légères modification front, travaillé sur le service market (back)
 
 Pierre-Louis: Auth service. Front index, fight, addCard, maintenance du site de test.
 
-Hugues: Intégration de différents services. Module DTO. Finission du front market. 
+Hugues: Intégration de différents services. Module DTO. Finission du market. 
 
 ## Elements du cahier des charges non réalise
 
