@@ -1,8 +1,9 @@
-function cardViewUpdate(card){
+async function cardViewUpdate(transaction) {
+    let card = await getCard(transaction.cardUUID);
     let template = document.querySelector("#cardViewTemplate");
     let clone = document.importNode(template.content, true);
     console.log(card)
-    if (card.price == -1)  {
+    if (card.price == -1) {
         card.price = "Not for sale";
     }
     let newContent = clone.firstElementChild.innerHTML
@@ -16,25 +17,21 @@ function cardViewUpdate(card){
         .replace(/{{attack}}/g, card.attack)
         .replace(/{{defense}}/g, card.defense)
         .replace(/{{price}}/g, card.price)
-        .replace(/{{sell_button}}/g, (card.price == "Not for sale") ? "Sell" : "Remove from market");
+        .replace(/{{sell_button}}/g, "Buy");
 
     clone.firstElementChild.innerHTML = newContent;
     let cardViewContainer = document.querySelector("#cardViewContainer");
     let sellButton = clone.firstElementChild.querySelector("#sellButton2");
     sellButton.addEventListener("click", (function (card) {
         return function (event) {
-            let c = card;
-            if (c.price == "Not for sale") {
-                sell_request(c);
-            }else{
-                remove_market_request(c);
-            }
+            let c = transaction;
+            buy_request(c);
             cardViewUpdate(c);
         };
     })(card));
-    cardViewContainer.children[cardViewContainer.children.length-1].remove();
+    cardViewContainer.children[cardViewContainer.children.length - 1].remove();
     cardViewContainer.appendChild(clone);
-    console.log(cardViewContainer.children[cardViewContainer.children.length-1]);
+    console.log(cardViewContainer.children[cardViewContainer.children.length - 1]);
 }
 
 function getCookie(cname) {
@@ -52,31 +49,39 @@ function getCookie(cname) {
     }
     return "";
 }
-async function getUserCards(){
+async function getTransactions(){
     let user = getCookie('user');
-    let response = await fetch("/market/getCardsTransaction/"+user);
+    let response = await fetch("/market/getTransactions");
     if (response.status !== 200) {
-        console.log("Error fetching cards");
+        console.log("Error fetching transactions");
+        return null;
+    }
+    return await response.json();
+}
+
+async function getCard(uuid){
+    let user = getCookie('user');
+    let response = await fetch("/card/getCard/"+uuid);
+    if (response.status !== 200) {
+        console.log("Error fetching card " + uuid);
         return null;
     }
     return await response.json();
 }
 
 async function displayUserCard(){
-    let userCards = await getUserCards();
-    console.log(userCards);
+    let transactions = await getTransactions();
+    console.log(transactions);
     let template = document.querySelector("#row");
 
     let newContent;
     let count = 0;
-    for (const card of userCards) {
+    for (const transaction of transactions) {
+        let card = await getCard(transaction.cardUUID);
         let clone = document.importNode(template.content, true);
         console.log(card)
-        console.log(card.imageUrl)
-        if (card.price == -1)  {
-            card.price = "Not for sale";
-        }
         newContent = clone.firstElementChild.innerHTML
+            .replace(/{{user_uuid}}/g, transaction.fromUserUUID)
             .replace(/{{uuid}}/g, card.uuid)
             .replace(/{{family_name}}/g, card.family)
             .replace(/{{img_src}}/g, card.imageUrl)
@@ -87,7 +92,7 @@ async function displayUserCard(){
             .replace(/{{attack}}/g, card.attack)
             .replace(/{{defense}}/g, card.defense)
             .replace(/{{price}}/g, card.price)
-            .replace(/{{sell_button}}/g, (card.price == "Not for sale") ? "Sell" : "Remove from market");
+            .replace(/{{sell_button}}/g, "Buy");
         clone.firstElementChild.innerHTML = newContent;
 
         let cardContainer = document.querySelector("#tableContent");
@@ -96,12 +101,8 @@ async function displayUserCard(){
         card_tmp = cardContainer.children[cardContainer.children.length-1]
         sellButton.addEventListener("click", (function (card) {
             return function (event) {
-                let c = card;
-                if (c.price == "Not for sale") {
-                    sell_request(c);
-                }else{
-                    remove_market_request(c);
-                }
+                let c = transaction;
+                buy_request(c);
                 cardViewUpdate(c);
             };
         })(card));
@@ -114,56 +115,31 @@ async function displayUserCard(){
         console.log(card_tmp)
         count = count+1;
     }
-    cardViewUpdate(userCards[0]);
+    cardViewUpdate(transactions[0]);
 }
 
-async function remove_market_request(card) {
+async function buy_request(transaction) {
     // send request to server
-    let user = getCookie('user');
+    let userUUID = getCookie('user');
     let data = {
-        cardUUID: card.uuid,
-        fromUserUUID: user,
-        price: -1
+        transcationUUID: transaction.transcationUUID,
+        cardUUID: transaction.cardUUID,
+        fromUserUUID: transaction.fromUserUUID,
+        toUserUUID: userUUID,
+        price: transaction.price
     };
-    let response = await fetch("/market/cancelTransaction/", {method: "POST", headers: {
+    let response = await fetch("/market/acceptTransaction", {method: "POST", headers: {
             'Content-Type': 'application/json'
         }, body: JSON.stringify(data)});
     if (response.status !== 200) {
-        console.log("Error updating cards");
+        console.log("Error accepting transaction");
         return null;
     }
-    console.log("cancel: " + card.uuid);
+    console.log("Transaction accepted");
     // reload page
     window.location.reload();
 }
-async function sell_request(card) {
-    // ask price to user
-    let price = prompt("Please enter your price", "100");
-    if (price == null || price === "") {
-        alert("No price given");
-        return;
-    }
-    // send request to server
-    let user = getCookie('user');
-    let data = {
-        cardUUID: card.uuid,
-        fromUserUUID: user,
-        price: price
-    };
-    let response = await fetch("/market/createTransaction/", {method: "POST", headers: {
-            'Content-Type': 'application/json'
-        }, body: JSON.stringify(data)});
-    if (response.status !== 200) {
-        console.log("Error updating cards");
-        return null;
-    }
-    console.log("sell: " + card.uuid + " for " + price + "$");
-    // reload page
-    window.location.reload();
-}
-
-
-displayUserCard().then(r => console.log("Cards displayed"));
+displayUserCard().then(r => console.log("Market displayed"));
 
 
 

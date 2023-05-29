@@ -7,6 +7,7 @@ import fr.dtos.common.market.TransactionDTO;
 import fr.dtos.common.user.UserDTO;
 import fr.dtos.common.utils.EServices;
 import fr.dtos.common.utils.Utils;
+import org.apache.tomcat.jni.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -37,12 +38,14 @@ public class RestCardCtr {
     }
     @GetMapping(value = "getCard/{uuid}", produces = "application/json")
     public ResponseEntity<?> getCard(@PathVariable("uuid") String uuid) {
-        System.out.println("uuid = " + uuid);
-        if (uuid == null) return new ResponseEntity<>("the uuid can't be null", HttpStatus.BAD_REQUEST);
+        System.out.println("getCard " + uuid);
+        if (uuid == null || UUID.fromString(uuid) == null) return new ResponseEntity<>("the uuid can't be null", HttpStatus.BAD_REQUEST);
         Card card = cardService.getCard(UUID.fromString(uuid));
+        System.out.println("   card: " + card);
         if (card == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         CardDTO cardDTO = new CardDTO();
         BeanUtils.copyProperties(card, cardDTO);
+        System.out.println("   return: " + cardDTO);
         return new ResponseEntity<>(cardDTO, HttpStatus.OK);
     }
 
@@ -98,9 +101,10 @@ public class RestCardCtr {
         //System.out.println("userDTO = " + userDTO);
         if(userDTO == null) return new ResponseEntity<>("user not found", HttpStatus.NOT_FOUND);
 //        return result.getBody();
-        cardService.newUserSet(UUID.fromString(uuidString));
+        List<Card> cards = cardService.newUserSet(UUID.fromString(uuidString));
+        List<CardDTO> cardDTOS = cardService.convertToDTO(cards);
         //System.out.println("Created new set" + cardService.getCardsByOwnerUUID(UUID.fromString(uuidString)));
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(cardDTOS, HttpStatus.OK);
     }
 
     @PostMapping(value = "/updatePrice", produces = "application/json")
@@ -112,6 +116,20 @@ public class RestCardCtr {
         if (card == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         card.setPrice(transactionDTO.getPrice());
         cardService.saveCard(card);
+        CardDTO cardDTO = new CardDTO();
+        BeanUtils.copyProperties(card, cardDTO);
+        return new ResponseEntity<>(cardDTO, HttpStatus.OK);
+    }
+    @GetMapping(value = "/changeOwner", produces = "application/json")
+    public ResponseEntity<?> changeOwner(@PathVariable("cardUUID") String cardUUIDString, @PathVariable("newOwnerUUID") String newOwnerUUIDString, @CookieValue("user") String cookieUserUuid){
+        System.out.println("cardUUIDString = " + cardUUIDString + "\nnewOwnerUUIDString = " + newOwnerUUIDString + "\ncookieUserUuid = " + cookieUserUuid);
+        if (cardUUIDString == null || newOwnerUUIDString == null) return new ResponseEntity<>("Your body is null", HttpStatus.BAD_REQUEST);
+        if (cookieUserUuid == null && !Utils.isUserKey(cookieUserUuid)) return new ResponseEntity<>("You need to be authenticated", HttpStatus.UNAUTHORIZED);
+        Card card = cardService.getCard(UUID.fromString(cardUUIDString));
+        if (card == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        card.setOwnerUUID(UUID.fromString(newOwnerUUIDString));
+        UserDTO userDTO = Utils.requestService(EServices.USER_SERVICE,"getUser/"+newOwnerUUIDString, null, UserDTO.class);
+        cardService.changeOwner(card, userDTO);
         CardDTO cardDTO = new CardDTO();
         BeanUtils.copyProperties(card, cardDTO);
         return new ResponseEntity<>(cardDTO, HttpStatus.OK);

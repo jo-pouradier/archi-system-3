@@ -51,23 +51,25 @@ public class RestUserCtr {
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
 
-    @GetMapping(value = "/credit/{uuid}/{amount}", produces = "application/json")
-    public ResponseEntity<UserDTO> credit(@PathVariable("uuid") String uuid, @PathVariable("amount") Float amount) {
+    @GetMapping(value = "/depot", produces = "application/json")
+    public ResponseEntity<UserDTO> credit(@RequestParam("uuid") String uuid, @RequestParam("amount") Float amount) {
         if (uuid == null) return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
         User user = userService.credit(UUID.fromString(uuid), amount);
         if (user == null) return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
+        System.out.println("Credit user: "+userDTO + " amount: "+amount);
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
-    @GetMapping(value = "/debit/{uuid}/{amount}", produces = "application/json")
-    public ResponseEntity<UserDTO> debit(@PathVariable("uuid") String uuid, @PathVariable("amount") Float amount) {
+    @GetMapping(value = "/debit", produces = "application/json")
+    public ResponseEntity<UserDTO> debit(@RequestParam("uuid") String uuid, @RequestParam("amount") Float amount) {
         if (uuid == null) return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
         boolean debit = userService.debit(UUID.fromString(uuid), amount);
         User user = userService.getUser(UUID.fromString(uuid));
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
         if (!debit) return new ResponseEntity<>(userDTO,HttpStatus.FORBIDDEN);
+        System.out.println("Debit user: "+userDTO + " amount: "+amount);
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
 
@@ -80,7 +82,7 @@ public class RestUserCtr {
         if (user == null) return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
-        System.out.println("Get user: "+userDTO);
+        System.out.println("Get user: " + userDTO);
         return new ResponseEntity<>(userDTO,HttpStatus.OK);
     }
     @GetMapping(value = "/getUserByEmail/{email}")

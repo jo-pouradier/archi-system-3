@@ -65,7 +65,7 @@ public class Utils {
                 System.out.println("La requête a échoué avec le code : " + response.getStatusCode());
             }
         } catch (Exception e) {
-            System.out.println("Erreur dans la requête : " + e.getMessage());
+            System.out.println("Request service " + service.getName()+"("+path+"): "+"Erreur dans la requête : " + e.getMessage());
         }
         return null;
     }
@@ -84,6 +84,7 @@ public class Utils {
         return getUser(uuid.toString());
     }
     public static CardDTO getCard(UUID uuid) {
+        if (uuid == null) return null;
         return getCard(uuid.toString());
     }
     public static CardDTO getCard(String uuid) {
@@ -103,11 +104,14 @@ public class Utils {
     }
 
     public static void debit(UUID uuid, float price) {
+        requestService(EServices.USER_SERVICE, "debit?uuid="+uuid+"&amount="+price, null, UserDTO.class, HttpMethod.GET);
     }
 
     public static void depot(UUID uuid, float price) {
+        requestService(EServices.USER_SERVICE, "depot?uuid="+uuid+"&amount="+price, null, UserDTO.class, HttpMethod.GET);
     }
 
     public static void changeOwner(CardDTO card, UserDTO to) {
+        requestService(EServices.CARD_SERVICE, "changeOwner/"+card.getUuid()+"/"+to.getUUID(), null, CardDTO.class, HttpMethod.GET);
     }
 }

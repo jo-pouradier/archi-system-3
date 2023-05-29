@@ -65,7 +65,7 @@ public class MarketService {
         if (valid == null)
             return false;
         if (valid.getFromUserUUID().equals(transaction.getFromUserUUID()) &&
-                valid.getCardUUID().equals(transaction.getCardUUID()) && valid.isPending() && valid.getToUserUUID().equals(transaction.getToUserUUID()))
+                valid.getCardUUID().equals(transaction.getCardUUID()) && valid.isPending())
             return true;
         return false;
     }
@@ -113,6 +113,9 @@ public class MarketService {
                 Utils.changeOwner(card, to);
                 Utils.debit(to.getUUID(), valid.getPrice());
                 Utils.depot(from.getUUID(), valid.getPrice());
+                marketRepository.save(valid);
+                marketRepository.delete(valid);
+                System.out.println("Transaction accepted");
                 return transaction;
             }
         }

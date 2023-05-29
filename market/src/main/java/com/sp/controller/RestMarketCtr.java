@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 
@@ -40,6 +41,13 @@ public class RestMarketCtr {
         return new ResponseEntity<>(marketTransaction, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/getTransactions", produces = "application/json")
+    public ResponseEntity<?> getTransactions() {
+        List<Transaction> marketTransaction = market.getTransactions().stream().filter(transaction -> transaction.getStatus().equals("pending")).collect(Collectors.toList());
+        if (isNull(marketTransaction)) return new ResponseEntity<>("Display not allowed", HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(marketTransaction, HttpStatus.OK);
+    }
+
     @PostMapping(value = "/createTransaction", produces = "application/json")
     public ResponseEntity<?> createTransaction(@RequestBody TransactionDTO transactionDTO) {
         Transaction transaction = new Transaction();
@@ -53,9 +61,15 @@ public class RestMarketCtr {
 
 
     @PostMapping(value = "/acceptTransaction", produces = "application/json")
-    public ResponseEntity<?> acceptTransaction(@RequestBody Transaction transaction) {
+    public ResponseEntity<?> acceptTransaction(@RequestBody TransactionDTO transactionDto) {
+        System.out.println(transactionDto);
+        Transaction transaction = new Transaction();
+        BeanUtils.copyProperties(transactionDto, transaction);
         Transaction marketTransaction = market.acceptTransaction(transaction);
+        transactionDto.setPrice(-1);
+        System.out.println(marketTransaction);
         if (isNull(marketTransaction)) return new ResponseEntity<>("Transaction not allowed!", HttpStatus.FORBIDDEN);
+        CardDTO updatedCard = Utils.requestService(EServices.CARD_SERVICE, "updatePrice/", transactionDto, CardDTO.class, HttpMethod.POST);
         return new ResponseEntity<>(marketTransaction, HttpStatus.OK);
     }
 
