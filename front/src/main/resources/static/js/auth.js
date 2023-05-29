@@ -4,7 +4,7 @@ function getUser() {
 }
 
 function updateUserHUD(uuid){
-    fetch('http://127.0.0.1:8000/user/getUser/' + uuid, {
+    fetch('/user/getUser/' + uuid, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
