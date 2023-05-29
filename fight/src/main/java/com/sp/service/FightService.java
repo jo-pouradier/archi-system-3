@@ -17,14 +17,12 @@ import java.util.UUID;
 public class FightService {
 
     @Autowired
-    private FightRepository market;
+    private FightRepository fightRepository;
 
-    @Autowired
-    private FightRepository marketRepository;
 
-    public Fight createTransaction(Fight transaction) {
-        UserDTO from = Utils.getUser(transaction.getFromUserUUID());
-        CardDTO card = Utils.getCard(transaction.getCardUUID());
+    public Fight createFight(Fight fight) {
+        UserDTO from = Utils.getUser(fight.getFromUserUUID());
+        CardDTO card = Utils.getCard(fight.getCardUUID());
         if (from != null && card != null) {
             Fight exist = getByFromAndCard(from.getUUID(), card.getUuid(), "pending");
             if (exist != null && exist.isPending())
@@ -32,16 +30,16 @@ public class FightService {
             CardDTO[] cardDTOS = Utils.getOwnerCards(from.getUUID().toString());
             List<CardDTO> cardDTOList = Arrays.asList(cardDTOS);
             if (cardDTOList.contains(card)) {
-                transaction.setStatus("pending");
-                transaction = marketRepository.save(transaction);
-                return transaction;
+                fight.setStatus("pending");
+                fight = fightRepository.save(fight);
+                return fight;
             }
         }
         return null;
     }
 
     public Fight getByFromAndCard(UUID from, UUID card, String status) {
-        return marketRepository.findByFromUserUUIDAndCardUUID(from, card, status);
+        return fightRepository.findByFromUserUUIDAndCardUUID(from, card, status);
     }
 
     public boolean existTransaction(UUID from, UUID card) {
@@ -51,7 +49,7 @@ public class FightService {
     public boolean isValidCancelTransaction(Fight transaction) {
         if (transaction.getTranscationUUID() == null)
             return false;
-        Fight valid = marketRepository.findById(transaction.getTranscationUUID()).orElse(null);
+        Fight valid = fightRepository.findById(transaction.getTranscationUUID()).orElse(null);
         if (valid == null)
             return false;
         if (valid.getFromUserUUID().equals(transaction.getFromUserUUID()) &&
@@ -61,7 +59,7 @@ public class FightService {
     }
 
     public boolean isValidAcceptTransaction(Fight transaction) {
-        Fight valid = marketRepository.findById(transaction.getTranscationUUID()).orElse(null);
+        Fight valid = fightRepository.findById(transaction.getTranscationUUID()).orElse(null);
         if (valid == null)
             return false;
         if (valid.getFromUserUUID().equals(transaction.getFromUserUUID()) &&
@@ -80,8 +78,8 @@ public class FightService {
             List<CardDTO> cardDTOList = Arrays.asList(cardDTOS);
             if (cardDTOList.contains(card)) {
                 transaction.setStatus("canceled");
-                marketRepository.save(transaction);
-                marketRepository.delete(transaction);
+                fightRepository.save(transaction);
+                fightRepository.delete(transaction);
                 return transaction;
             }
         }
@@ -90,16 +88,16 @@ public class FightService {
 
     public List<Fight> getTransactions() {
         List<Fight> transactions = new ArrayList<Fight>();
-        market.findAll().iterator().forEachRemaining(transactions::add);
+        fightRepository.findAll().iterator().forEachRemaining(transactions::add);
         return transactions;
     }
 
-    public Fight acceptTransaction(Fight transaction) {
-        if (!isValidAcceptTransaction(transaction))
+    public Fight acceptFight(Fight fight) {
+        if (!isValidAcceptTransaction(fight))
             return null;
-        UserDTO from = Utils.getUser(transaction.getFromUserUUID());
-        UserDTO to = Utils.getUser(transaction.getToUserUUID());
-        CardDTO card = Utils.getCard(transaction.getCardUUID());
+        UserDTO from = Utils.getUser(fight.getFromUserUUID());
+        UserDTO to = Utils.getUser(fight.getToUserUUID());
+        CardDTO card = Utils.getCard(fight.getCardUUID());
         if (from != null && card != null && to != null) {
             Fight valid =  getByFromAndCard(from.getUUID(), card.getUuid(), "pending");
             if (valid == null)
@@ -109,14 +107,14 @@ public class FightService {
             CardDTO[] cardDTOS = Utils.getOwnerCards(from.getUUID().toString());
             List<CardDTO> cardDTOList = Arrays.asList(cardDTOS);
             if (cardDTOList.contains(card)) {
-                transaction.setStatus("accepted");
+                fight.setStatus("accepted");
                 Utils.changeOwner(card, to);
                 Utils.debit(to.getUUID(), valid.getPrice());
                 Utils.depot(from.getUUID(), valid.getPrice());
-                marketRepository.save(valid);
-                marketRepository.delete(valid);
-                System.out.println("Transaction accepted");
-                return transaction;
+                fightRepository.save(valid);
+                fightRepository.delete(valid);
+                System.out.println("Fight accepted");
+                return fight;
             }
         }
         return null;
