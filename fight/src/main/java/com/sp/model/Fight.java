@@ -18,10 +18,13 @@ public class Fight {
     private UUID transcationUUID = null;
     @Getter
     @Setter
-    private UUID cardUUID = null;
+    private UUID fromCardUUID = null;
     @Getter
     @Setter
     private UUID fromUserUUID = null;
+    @Getter
+    @Setter
+    private UUID toCardUUID = null;
     @Getter
     @Setter
     private UUID toUserUUID = null;
@@ -49,8 +52,9 @@ public class Fight {
     public String toString() {
         return "Transaction{" +
                 "transcationUUID=" + transcationUUID +
-                ", cardUUID=" + cardUUID +
+                ", fromCardUUID=" + fromCardUUID +
                 ", fromUserUUID=" + fromUserUUID +
+                ", toCardUUID=" + toCardUUID +
                 ", toUserUUID=" + toUserUUID +
                 ", price=" + price +
                 ", status='" + status + '\'' +

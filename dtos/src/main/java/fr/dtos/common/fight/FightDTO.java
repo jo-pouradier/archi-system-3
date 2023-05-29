@@ -12,10 +12,13 @@ public class FightDTO {
     private UUID transcationUUID = null;
     @Getter
     @Setter
-    private UUID cardUUID = null;
+    private UUID fromCardUUID = null;
     @Getter
     @Setter
     private UUID fromUserUUID = null;
+    @Getter
+    @Setter
+    private UUID toCardUUID = null;
     @Getter
     @Setter
     private UUID toUserUUID = null;

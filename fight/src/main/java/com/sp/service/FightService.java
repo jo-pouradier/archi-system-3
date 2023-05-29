@@ -22,7 +22,7 @@ public class FightService {
 
     public Fight createFight(Fight fight) {
         UserDTO from = Utils.getUser(fight.getFromUserUUID());
-        CardDTO card = Utils.getCard(fight.getCardUUID());
+        CardDTO card = Utils.getCard(fight.getFromCardUUID());
         if (from != null && card != null) {
             Fight exist = getByFromAndCard(from.getUUID(), card.getUuid(), "pending");
             if (exist != null && exist.isPending())
@@ -53,7 +53,7 @@ public class FightService {
         if (valid == null)
             return false;
         if (valid.getFromUserUUID().equals(transaction.getFromUserUUID()) &&
-                valid.getCardUUID().equals(transaction.getCardUUID()))
+                valid.getFromCardUUID().equals(transaction.getFromCardUUID()))
             return true;
         return false;
     }
@@ -63,7 +63,7 @@ public class FightService {
         if (valid == null)
             return false;
         if (valid.getFromUserUUID().equals(transaction.getFromUserUUID()) &&
-                valid.getCardUUID().equals(transaction.getCardUUID()) && valid.isPending())
+                valid.getFromCardUUID().equals(transaction.getFromCardUUID()) && valid.isPending())
             return true;
         return false;
     }
@@ -72,7 +72,7 @@ public class FightService {
         if (!isValidCancelTransaction(transaction))
             return null;
         UserDTO from = Utils.getUser(transaction.getFromUserUUID());
-        CardDTO card = Utils.getCard(transaction.getCardUUID());
+        CardDTO card = Utils.getCard(transaction.getFromCardUUID());
         if (from != null && card != null) {
             CardDTO[] cardDTOS = Utils.getOwnerCards(from.getUUID().toString());
             List<CardDTO> cardDTOList = Arrays.asList(cardDTOS);
@@ -95,20 +95,20 @@ public class FightService {
     public Fight acceptFight(Fight fight) {
         if (!isValidAcceptTransaction(fight))
             return null;
-        UserDTO from = Utils.getUser(fight.getFromUserUUID());
         UserDTO to = Utils.getUser(fight.getToUserUUID());
-        CardDTO card = Utils.getCard(fight.getCardUUID());
-        if (from != null && card != null && to != null) {
-            Fight valid =  getByFromAndCard(from.getUUID(), card.getUuid(), "pending");
+        CardDTO cardTo = Utils.getCard(fight.getToCardUUID());
+        UserDTO from = Utils.getUser(fight.getFromUserUUID());
+        if (cardTo != null && to != null) {
+            Fight valid =  getByFromAndCard(to.getUUID(), cardTo.getUuid(), "pending");
             if (valid == null)
                 return null;
             if (valid.getPrice() > to.getBalance())
                 return null;
             CardDTO[] cardDTOS = Utils.getOwnerCards(from.getUUID().toString());
             List<CardDTO> cardDTOList = Arrays.asList(cardDTOS);
-            if (cardDTOList.contains(card)) {
+            if (cardDTOList.contains(cardTo)) {
                 fight.setStatus("accepted");
-                Utils.changeOwner(card, to);
+                Utils.changeOwner(cardTo, to);
                 Utils.debit(to.getUUID(), valid.getPrice());
                 Utils.depot(from.getUUID(), valid.getPrice());
                 fightRepository.save(valid);

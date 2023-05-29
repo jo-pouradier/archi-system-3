@@ -23,9 +23,9 @@ public interface FightRepository extends CrudRepository<Fight, UUID> {
 
 
     default Fight findByFromUserUUIDAndCardUUID(UUID from, UUID card, String status){
-        for (Fight transaction : this.findByOwnerUUID(from)) {
-            if(transaction.getCardUUID().equals(card) && transaction.getStatus().equals(status)){
-                return transaction;
+        for (Fight fight : this.findByOwnerUUID(from)) {
+            if(fight.getToCardUUID().equals(card) && fight.getStatus().equals(status)){
+                return fight;
             }
         }
         return null;
