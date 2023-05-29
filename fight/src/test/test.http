@@ -35,37 +35,46 @@ Content-Type: application/json
 Cookie: user=tp
 
 > {%
-    client.global.set("uuid_card", response.body[0].uuid);
-    client.log("uuid_card : " + response.body[0].uuid);
+    client.global.set("uuid_card_from", response.body[0].uuid);
+    client.log("uuid_card_from : " + response.body[0].uuid);
 %}
+### get card by user ###
+GET http://127.0.0.1:8000/card/getCardsByOwner/{{uuid_to}}
+Accept: application/json
+Content-Type: application/json
+Cookie: user=tp
 
+> {%
+    client.global.set("uuid_card_to", response.body[0].uuid);
+    client.log("uuid_card_to : " + response.body[0].uuid);
+%}
 ###
-POST http://127.0.0.1:{{proxy_port}}/market/createTransaction
+POST http://127.0.0.1:{{proxy_port}}/fight/createFight
 Accept: application/json
 Content-Type: application/json
 Cookie: user=tp
 
 {
-  "cardUUID": "{{uuid_card}}",
+  "fromCardUUID": "{{uuid_card_from}}",
   "fromUserUUID":"{{uuid_from}}",
-  "toUserUUID":"{{uuid_to}}",
   "price": 100
 }
 > {%
-    client.global.set("uuid_transaction", response.body.transcationUUID);
-    client.log("uuid_transaction : " + response.body.transcationUUID);
+    client.global.set("uuid_fight", response.body.fightUUID);
+    client.log("uuid_fight : " + response.body.fightUUID);
 %}
 ###
-POST http://127.0.0.1:{{proxy_port}}/market/acceptTransaction
+POST http://127.0.0.1:{{proxy_port}}/fight/acceptFight
 Accept: application/json
 Content-Type: application/json
 Cookie: user=tp
 
 {
-  "transcationUUID":"{{uuid_transaction}}",
-  "cardUUID": "{{uuid_card}}",
+  "fightUUID":"{{uuid_fight}}",
+  "fromCardUUIS": "{{uuid_card_from}}",
   "fromUserUUID":"{{uuid_from}}",
   "toUserUUID":"{{uuid_to}}",
+  "toCardUUID": "{{uuid_card_to}}",
   "price": 100
 }
 
@@ -82,5 +91,17 @@ Accept: application/json
 Content-Type: application/json
 Cookie: user=tp
 
+
+### get card by user ###
+GET http://127.0.0.1:8000/card/getCardsByOwner/{{uuid_from}}
+Accept: application/json
+Content-Type: application/json
+Cookie: user=tp
+
+### get card by user ###
+GET http://127.0.0.1:8000/card/getCardsByOwner/{{uuid_to}}
+Accept: application/json
+Content-Type: application/json
+Cookie: user=tp
 
 

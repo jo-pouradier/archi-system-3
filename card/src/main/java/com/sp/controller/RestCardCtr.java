@@ -3,6 +3,7 @@ package com.sp.controller;
 import com.sp.model.Card;
 import fr.dtos.common.card.CardDTO;
 import com.sp.service.CardService;
+import fr.dtos.common.fight.FightDTO;
 import fr.dtos.common.market.TransactionDTO;
 import fr.dtos.common.user.UserDTO;
 import fr.dtos.common.utils.EServices;
@@ -120,6 +121,22 @@ public class RestCardCtr {
         BeanUtils.copyProperties(card, cardDTO);
         return new ResponseEntity<>(cardDTO, HttpStatus.OK);
     }
+
+    @PostMapping(value = "/updateEnergy", produces = "application/json")
+    public ResponseEntity<?> updateEnergy(@RequestParam("cardUUID") String cardUUID, @RequestParam("energyAmount") int energyAmount ,@CookieValue("user") String cookieUserUuid){
+        System.out.println("cardUUID = " + cardUUID + "\ncookieUserUuid = " + cookieUserUuid);
+        if (cardUUID == null || UUID.fromString(cardUUID) == null) return new ResponseEntity<>("Your body is null", HttpStatus.BAD_REQUEST);
+        if (cookieUserUuid == null && !Utils.isUserKey(cookieUserUuid)) return new ResponseEntity<>("You need to be authenticated", HttpStatus.UNAUTHORIZED);
+        // TODO update energy of 2 cards
+        Card card = cardService.getCard(UUID.fromString(cardUUID));
+        if (card == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        card.setEnergy(energyAmount);
+        cardService.saveCard(card);
+        CardDTO cardDTO = new CardDTO();
+        BeanUtils.copyProperties(card, cardDTO);
+        return new ResponseEntity<>(cardDTO, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/changeOwner", produces = "application/json")
     public ResponseEntity<?> changeOwner(@RequestParam("cardUUID") String cardUUIDString, @RequestParam("newOwnerUUID") String newOwnerUUIDString, @CookieValue("user") String cookieUserUuid){
         System.out.println("cardUUIDString = " + cardUUIDString + "\nnewOwnerUUIDString = " + newOwnerUUIDString + "\ncookieUserUuid = " + cookieUserUuid);

@@ -114,4 +114,16 @@ public class Utils {
     public static void changeOwner(CardDTO card, UserDTO to) {
         requestService(EServices.CARD_SERVICE, "changeOwner?cardUUID="+card.getUuid()+"&newOwnerUUID="+to.getUUID(), null, CardDTO.class, HttpMethod.GET);
     }
+
+    public static CardDTO updateEnergy(UUID toCardUUID, int amount) {
+        return requestService(EServices.CARD_SERVICE, "updateEnergy?cardUUID="+toCardUUID+"&amount="+amount, null, CardDTO.class, HttpMethod.GET);
+    }
+
+
+    public static CardDTO getWinner(CardDTO cardFrom, CardDTO cardTo) {
+        return cardFrom;
+    }
+    public static int getDamage(CardDTO cardFrom, CardDTO cardTo) {
+        return cardFrom.getEnergy() - cardTo.getEnergy();
+    }
 }

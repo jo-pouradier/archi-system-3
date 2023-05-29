@@ -9,7 +9,7 @@ public class FightDTO {
 
     @Getter
     @Setter
-    private UUID transcationUUID = null;
+    private UUID fightUUID = null;
     @Getter
     @Setter
     private UUID fromCardUUID = null;

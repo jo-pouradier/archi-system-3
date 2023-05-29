@@ -15,7 +15,7 @@ public class Fight {
     @GeneratedValue
     @Getter
     @Setter
-    private UUID transcationUUID = null;
+    private UUID fightUUID = null;
     @Getter
     @Setter
     private UUID fromCardUUID = null;
@@ -51,7 +51,7 @@ public class Fight {
     @Override
     public String toString() {
         return "Transaction{" +
-                "transcationUUID=" + transcationUUID +
+                "transcationUUID=" + fightUUID +
                 ", fromCardUUID=" + fromCardUUID +
                 ", fromUserUUID=" + fromUserUUID +
                 ", toCardUUID=" + toCardUUID +

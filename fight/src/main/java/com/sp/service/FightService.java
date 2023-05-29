@@ -8,6 +8,7 @@ import fr.dtos.common.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.smartcardio.Card;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,9 +48,9 @@ public class FightService {
     }
 
     public boolean isValidCancelTransaction(Fight transaction) {
-        if (transaction.getTranscationUUID() == null)
+        if (transaction.getFightUUID() == null)
             return false;
-        Fight valid = fightRepository.findById(transaction.getTranscationUUID()).orElse(null);
+        Fight valid = fightRepository.findById(transaction.getFightUUID()).orElse(null);
         if (valid == null)
             return false;
         if (valid.getFromUserUUID().equals(transaction.getFromUserUUID()) &&
@@ -59,7 +60,7 @@ public class FightService {
     }
 
     public boolean isValidAcceptTransaction(Fight transaction) {
-        Fight valid = fightRepository.findById(transaction.getTranscationUUID()).orElse(null);
+        Fight valid = fightRepository.findById(transaction.getFightUUID()).orElse(null);
         if (valid == null)
             return false;
         if (valid.getFromUserUUID().equals(transaction.getFromUserUUID()) &&
@@ -97,9 +98,12 @@ public class FightService {
             return null;
         UserDTO to = Utils.getUser(fight.getToUserUUID());
         CardDTO cardTo = Utils.getCard(fight.getToCardUUID());
-        UserDTO from = Utils.getUser(fight.getFromUserUUID());
-        if (cardTo != null && to != null) {
-            Fight valid =  getByFromAndCard(to.getUUID(), cardTo.getUuid(), "pending");
+        if (cardTo != null && to != null && fight.getFightUUID() != null) {
+            Fight valid =  fightRepository.findById(fight.getFightUUID()).orElseGet(null);
+            if (valid == null)
+                return null;
+            UserDTO from = Utils.getUser(valid.getFromUserUUID());
+            CardDTO cardFrom = Utils.getCard(valid.getFromCardUUID());
             if (valid == null)
                 return null;
             if (valid.getPrice() > to.getBalance())
@@ -108,9 +112,14 @@ public class FightService {
             List<CardDTO> cardDTOList = Arrays.asList(cardDTOS);
             if (cardDTOList.contains(cardTo)) {
                 fight.setStatus("accepted");
-                Utils.changeOwner(cardTo, to);
-                Utils.debit(to.getUUID(), valid.getPrice());
-                Utils.depot(from.getUUID(), valid.getPrice());
+                CardDTO winner = Utils.getWinner(cardFrom, cardTo);
+                CardDTO loser = winner.getUuid().equals(cardFrom.getUuid()) ? cardTo : cardFrom;
+                UserDTO winnerUser = winner.getUuid().equals(cardFrom.getUuid()) ? to : from;
+                UserDTO loserUser = winner.getUuid().equals(cardFrom.getUuid()) ? from : to;
+                Utils.debit(loserUser.getUUID(), valid.getPrice());
+                Utils.depot(winnerUser.getUUID(), valid.getPrice());
+                Utils.updateEnergy(winner.getUuid(), winner.getEnergy() + 1);
+                Utils.updateEnergy(loser.getUuid(), loser.getEnergy() - 1);
                 fightRepository.save(valid);
                 fightRepository.delete(valid);
                 System.out.println("Fight accepted");

@@ -35,7 +35,7 @@ public class RestFightCtr {
         return new ResponseEntity<>(fights, HttpStatus.OK);
     }
     @PostMapping(value = "/createFight", produces = "application/json")
-    public ResponseEntity<?> createTransaction(@RequestBody FightDTO fightDTO) {
+    public ResponseEntity<?> createFight(@RequestBody FightDTO fightDTO) {
         if (fightDTO.getPrice()<0) return new ResponseEntity<>("Price must be positive", HttpStatus.FORBIDDEN);
         Fight transaction = new Fight();
         BeanUtils.copyProperties(fightDTO, transaction);
@@ -46,15 +46,17 @@ public class RestFightCtr {
     }
 
     @PostMapping(value = "/acceptFight", produces = "application/json")
-    public ResponseEntity<?> acceptTransaction(@RequestBody FightDTO fightDTO) {
+    public ResponseEntity<?> acceptFight(@RequestBody FightDTO fightDTO) {
         System.out.println(fightDTO);
         Fight fight = new Fight();
         BeanUtils.copyProperties(fightDTO, fight);
         Fight fightTransaction = fightService.acceptFight(fight);
         // TODO fight
         System.out.println(fightTransaction);
-        if (isNull(fightTransaction)) return new ResponseEntity<>("Transaction not allowed!", HttpStatus.FORBIDDEN);
+        if (isNull(fightTransaction)) return new ResponseEntity<>("Fight not allowed!", HttpStatus.FORBIDDEN);
         // TODO update energy
+        Utils.updateEnergy(fightTransaction.getToCardUUID(), 10);
+        Utils.updateEnergy(fightTransaction.getFromCardUUID(),10);
         //CardDTO updatedCard = Utils.requestService(EServices.CARD_SERVICE, "updatePrice/", transactionDto, CardDTO.class, HttpMethod.POST);
         return new ResponseEntity<>(fightTransaction, HttpStatus.OK);
     }
