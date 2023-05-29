@@ -1,6 +1,10 @@
 # archi-system-3
 
-# Elements du cahier des charges par membres
+## Problème majeur rencontré
+
+- Serveur proxy docker ne fonctionnant pas. Beaucoup de temps perdu à essayer de le faire fonctionner.
+
+## Elements du cahier des charges par membres
 
 Joseph: Mise en place du proxy. Mise en place test http pour Card Service et User. Mise en place service card
 
@@ -10,7 +14,7 @@ Pierre-Louis: Auth service. Front index, fight, addCard, maintenance du site de 
 
 Hugues: Intégration de différents services. Module DTO. Finission du front market. 
 
-# Elements du cahier des charges non réalise
+## Elements du cahier des charges non réalise
 
 - Fight module théoriquement fontionnel. Pas pu testé ni faire le front
 
