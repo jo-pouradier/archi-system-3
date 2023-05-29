@@ -49,6 +49,8 @@ public class MarketService {
     }
 
     public boolean isValidCancelTransaction(Transaction transaction) {
+        if (transaction.getTranscationUUID() == null)
+            return false;
         Transaction valid = marketRepository.findById(transaction.getTranscationUUID()).orElse(null);
         if (valid == null)
             return false;
