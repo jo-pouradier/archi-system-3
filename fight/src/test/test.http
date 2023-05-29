@@ -1,0 +1,86 @@
+POST http://127.0.0.1:{{proxy_port}}/auth/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "user1",
+  "password":"tp",
+  "email":"tp@tp.tp"
+}
+> {%
+    client.assert(response.status === 200, 'response status is not 200');
+    client.global.set("uuid_from", response.body.uuid);
+    client.log("uuid_from : " + response.body.uuid);
+%}
+###
+POST http://127.0.0.1:{{proxy_port}}/auth/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "user2",
+  "password":"tp",
+  "email":"tp2@tp.tp"
+}
+> {%
+    client.assert(response.status === 200, 'response status is not 200');
+    client.global.set("uuid_to", response.body.uuid);
+    client.log("uuid_to : " + response.body.uuid);
+%}
+
+### get card by user ###
+GET http://127.0.0.1:8000/card/getCardsByOwner/{{uuid_from}}
+Accept: application/json
+Content-Type: application/json
+Cookie: user=tp
+
+> {%
+    client.global.set("uuid_card", response.body[0].uuid);
+    client.log("uuid_card : " + response.body[0].uuid);
+%}
+
+###
+POST http://127.0.0.1:{{proxy_port}}/market/createTransaction
+Accept: application/json
+Content-Type: application/json
+Cookie: user=tp
+
+{
+  "cardUUID": "{{uuid_card}}",
+  "fromUserUUID":"{{uuid_from}}",
+  "toUserUUID":"{{uuid_to}}",
+  "price": 100
+}
+> {%
+    client.global.set("uuid_transaction", response.body.transcationUUID);
+    client.log("uuid_transaction : " + response.body.transcationUUID);
+%}
+###
+POST http://127.0.0.1:{{proxy_port}}/market/acceptTransaction
+Accept: application/json
+Content-Type: application/json
+Cookie: user=tp
+
+{
+  "transcationUUID":"{{uuid_transaction}}",
+  "cardUUID": "{{uuid_card}}",
+  "fromUserUUID":"{{uuid_from}}",
+  "toUserUUID":"{{uuid_to}}",
+  "price": 100
+}
+
+### get user from###
+GET http://127.0.0.1:8000/user/getUser/{{uuid_from}}
+Accept: application/json
+Content-Type: application/json
+Cookie: user=tp
+
+
+### get user to###
+GET http://127.0.0.1:8000/user/getUser/{{uuid_to}}
+Accept: application/json
+Content-Type: application/json
+Cookie: user=tp
+
+
+

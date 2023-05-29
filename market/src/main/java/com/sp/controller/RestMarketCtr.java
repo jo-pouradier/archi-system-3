@@ -31,9 +31,6 @@ public class RestMarketCtr {
     @Autowired
     private MarketService market;
 
-    @Autowired
-    private MarketRepository marketrepo;
-
     @GetMapping(value = "/displayMarket", produces = "application/json")
     public ResponseEntity<?> displayMarket() {
         List<Transaction> marketTransaction = market.getTransactions();
