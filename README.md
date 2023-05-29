@@ -12,6 +12,8 @@ Hugues: Intégration de différents services. Module DTO. Finission du front mar
 
 # Elements du cahier des charges non réalise
 
+- Fight module théoriquement fontionnel. Pas pu testé ni faire le front
+
 ## Note
 
 Un Cookie est un seul objet clé: valeur. On ne peut pas avoir un cookie tel que user={id: 1, name: "toto"}. Il faut faire deux cookies: user_id=1 et user_name=toto.
