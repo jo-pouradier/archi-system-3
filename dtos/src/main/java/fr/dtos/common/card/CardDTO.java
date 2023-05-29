@@ -20,7 +20,7 @@ public class CardDTO{
     private int attack;
     private int defense;
     private int energy;
-    private float price;
+    private float price = -1;
 
     public CardDTO(){
 

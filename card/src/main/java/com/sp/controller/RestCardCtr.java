@@ -31,7 +31,7 @@ public class RestCardCtr {
         return HttpStatus.OK;
     }
 
-    @GetMapping(value = "/getCards", produces = "application/json")
+    @GetMapping(value = "getCards", produces = "application/json")
     public ResponseEntity<List<CardDTO>> getCards() {
         List<CardDTO> cardDTOS = cardService.convertToDTO(cardService.getCards());
         return new ResponseEntity<>(cardDTOS, HttpStatus.OK);
