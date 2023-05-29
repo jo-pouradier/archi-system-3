@@ -159,7 +159,7 @@ async function remove_market_request(card) {
         fromUserUUID: user,
         price: -1
     };
-    let response = await fetch("/market/cancelTransaction/", {method: "POST", headers: {
+    let response = await fetch("/fight/cancelFight/", {method: "POST", headers: {
             'Content-Type': 'application/json'
         }, body: JSON.stringify(data)});
     if (response.status !== 200) {
@@ -172,7 +172,7 @@ async function remove_market_request(card) {
 }
 async function sell_request(card) {
     // ask price to user
-    let price = prompt("Please enter your price", "100");
+    let price = prompt("Please enter your fight price", "100");
     if (price == null || price === "") {
         alert("No price given");
         return;
@@ -184,7 +184,7 @@ async function sell_request(card) {
         fromUserUUID: user,
         price: price
     };
-    let response = await fetch("/market/createTransaction/", {method: "POST", headers: {
+    let response = await fetch("/fight/createFight/", {method: "POST", headers: {
             'Content-Type': 'application/json'
         }, body: JSON.stringify(data)});
     if (response.status !== 200) {
@@ -197,7 +197,7 @@ async function sell_request(card) {
 }
 
 
-displayUserCard().then(r => console.log("Cards displayed"));
+displayUserCard().then(r => console.log("Fights displayed"));
 
 
 
