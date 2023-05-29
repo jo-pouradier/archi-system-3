@@ -50,6 +50,7 @@ public class RestMarketCtr {
 
     @PostMapping(value = "/createTransaction", produces = "application/json")
     public ResponseEntity<?> createTransaction(@RequestBody TransactionDTO transactionDTO) {
+        if (transactionDTO.getPrice()<0) return new ResponseEntity<>("Price must be positive", HttpStatus.FORBIDDEN);
         Transaction transaction = new Transaction();
         BeanUtils.copyProperties(transactionDTO, transaction);
         Transaction marketTransaction = market.createTransaction(transaction);
